@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityBoxPutawayMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="putaway_id" jdbcType="VARCHAR" property="putawayId" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="seal_box_serial_number" jdbcType="VARCHAR" property="sealBoxSerialNumber" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="sku_floor" jdbcType="VARCHAR" property="skuFloor" />
+        <result column="floor_box_number" jdbcType="VARCHAR" property="floorBoxNumber" />
+        <result column="list_box_number" jdbcType="VARCHAR" property="listBoxNumber" />
+        <result column="planned_putaway_number" jdbcType="INTEGER" property="plannedPutawayNumber" />
+        <result column="actual_putaway_number" jdbcType="INTEGER" property="actualPutawayNumber" />
+        <result column="recommended_location_code" jdbcType="VARCHAR" property="recommendedLocationCode" />
+        <result column="actual_location_code" jdbcType="VARCHAR" property="actualLocationCode" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime" />
+        <result column="operator" jdbcType="VARCHAR" property="operator" />
+        <result column="operator_id" jdbcType="INTEGER" property="operatorId" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, putaway_id, warehouse_code, seal_box_serial_number, waybill_number, sku, sku_floor, 
+        floor_box_number, list_box_number, planned_putaway_number, actual_putaway_number, 
+        recommended_location_code, actual_location_code, create_time, putaway_time, operator, 
+        operator_id, status
+    </sql>
+    
+    <resultMap id="PDAResultMap" type="com.brandslink.cloud.inbound.dto.PutawayShelfDto">
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="planned_putaway_number" jdbcType="INTEGER" property="plannedPutawayNumber" />
+        <result column="actual_putaway_number" jdbcType="INTEGER" property="actualPutawayNumber" />
+    </resultMap>
+    
+	
+	<!-- 验证该质检箱是否存在未楼层分理的质检数据 -->
+    <select id="checkAmountByQualityBox"  resultType="java.lang.Integer">
+        select 
+        count(*)
+        from t_quality_box_putaway
+        where seal_box_serial_number = #{sealBoxSerialNumber}
+        and status = 0
+        and warehouse_code = #{warehouseCode}
+    </select>
+	
+
+    <!-- 通过质检箱号查询楼层 -->
+    <select id="selectSkuFloorByQuBox"  resultType="java.lang.String">
+        select
+        sku_floor
+        from t_quality_box_putaway
+        where seal_box_serial_number = #{sealBoxSerialNumber}
+        and status = 0
+        and warehouse_code = #{warehouseCode}
+        and floor_box_number is null
+        and list_box_number is null
+        limit 1
+    </select>
+
+	<!-- 校验操作  不可绑定质检箱 -->
+    <select id="checkQualityBoxBind"  resultType="java.lang.String">
+        select
+        seal_box_serial_number
+        from t_quality_box_putaway
+        where warehouse_code = #{warehouseCode}
+        and floor_box_number is null
+        and status = 0
+    </select>
+
+
+	<!-- 绑定楼层箱是校验是否重复绑定 -->
+    <select id="checkRepetitionFloorBox"  resultType="java.lang.String">
+        select
+        floor_box_number
+        from t_quality_box_putaway
+        where seal_box_serial_number = #{sealBoxSerialNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        and list_box_number is null
+    </select>
+
+
+    <!-- 质检箱绑定楼层箱 -->
+    <update id="bindFloorBox" >
+        update t_quality_box_putaway
+        set floor_box_number = #{floorBoxNumber}
+        where seal_box_serial_number = #{sealBoxSerialNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        and floor_box_number is null
+        and list_box_number is null
+    </update>
+
+
+	<!-- 校验楼层箱内是否有未货列分离的商品 -->
+    <select id="checkAmountByListBox"  resultType="java.lang.Integer">
+        select 
+        count(*)
+        from t_quality_box_putaway
+        where floor_box_number = #{floorBoxNumber}
+        and warehouse_code = #{warehouseCode}
+        and list_box_number is null
+        and status = 0
+    </select>
+
+
+
+    <!-- 通过楼层箱号，sku查询货列 -->
+    <select id="selectListInfoByFloorBox"  resultType="java.lang.String">
+        select
+        recommended_location_code
+        from t_quality_box_putaway
+        where floor_box_number = #{floorBoxNumber}
+        and sku = #{sku}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        and list_box_number is null
+    </select>
+
+
+	<!-- 校验楼层箱中的商品是否已经分理完 -->
+    <select id="checkFloorBoxAmount"  resultType="java.lang.Integer">
+        select
+        count(*)
+        from t_quality_box_putaway
+        where floor_box_number = #{floorBoxNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        and list_box_number is null
+    </select>
+
+
+	<!-- 查询楼层箱内的商品详情信息 -->
+    <select id="selectFloorBoxSkuDetailInfo" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_quality_box_putaway
+        where floor_box_number = #{floorBoxNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+    </select>
+
+
+
+
+    <!-- 绑定货列箱 -->
+    <update id="bindListBox" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        update t_quality_box_putaway
+        set list_box_number = #{listBoxNumber}
+        where floor_box_number = #{floorBoxNumber}
+        and sku = #{sku}
+        and recommended_location_code = #{recommendedLocationCode}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        and list_box_number is null
+    </update>
+
+
+	<!-- 校验货列箱中的商品是否已经分理完 -->
+    <select id="checkListBoxAmount"  resultType="java.lang.Integer">
+        select
+        count(*)
+        from t_quality_box_putaway
+        where list_box_number = #{listBoxNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+    </select>
+
+
+    <!-- 查询sku上架详情信息 -->
+    <select id="selectSkuDetailInfo" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_quality_box_putaway
+        where list_box_number = #{listBoxNumber}
+        and sku = #{sku}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+    </select>
+    
+    
+    <!-- 第二次查询sku上架详情信息 -->
+    <select id="selectSkuDetailInfoSecond" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_quality_box_putaway
+        where list_box_number = #{listBoxNumber}
+        and sku = #{sku}
+        and warehouse_code = #{warehouseCode}
+        and recommended_location_code = #{recommendedLocationCode}
+        and status = 0
+    </select>
+
+
+    <!-- 上架成功确认 -->
+    <update id="putawayShelfSuccess" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        update t_quality_box_putaway
+        set actual_putaway_number = #{actualPutawayNumber},actual_location_code = #{actualLocationCode},status = #{status},putaway_time = #{putawayTime},
+        operator = #{operator},operator_id = #{operatorId}
+        where sku = #{sku}
+        and recommended_location_code = #{recommendedLocationCode}
+        and planned_putaway_number = #{plannedPutawayNumber}
+        and list_box_number = #{listBoxNumber}
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+    </update>
+
+
+    <!-- 通过货列箱号查询上架信息 -->
+    <select id="selectSkuInfoByListBoxId" resultMap="PDAResultMap">
+        select sku,planned_putaway_number,actual_putaway_number  from t_quality_box_putaway
+        where list_box_number = #{listBoxNumber} 
+        and warehouse_code = #{warehouseCode}
+        and status = 0
+        order by create_time desc
+    </select>
+    
+    
+    <!-- 通过上架单号查询上架信息 -->
+    <select id="selectPutawayStatusByPutawayId"  resultType="java.lang.Integer">
+        select 
+        status
+        from t_quality_box_putaway
+        where putaway_id = #{putawayId} and warehouse_code = #{warehouseCode}
+    </select>
+    
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_box_putaway
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_box_putaway
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        insert into t_quality_box_putaway (sid, putaway_id, warehouse_code, 
+            seal_box_serial_number, waybill_number, sku, 
+            sku_floor, floor_box_number, list_box_number, 
+            planned_putaway_number, actual_putaway_number, 
+            recommended_location_code, actual_location_code, 
+            create_time, putaway_time, operator, 
+            operator_id, status)
+        values (#{sid,jdbcType=BIGINT}, #{putawayId,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
+            #{sealBoxSerialNumber,jdbcType=VARCHAR}, #{waybillNumber,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, 
+            #{skuFloor,jdbcType=VARCHAR}, #{floorBoxNumber,jdbcType=VARCHAR}, #{listBoxNumber,jdbcType=VARCHAR}, 
+            #{plannedPutawayNumber,jdbcType=INTEGER}, #{actualPutawayNumber,jdbcType=INTEGER}, 
+            #{recommendedLocationCode,jdbcType=VARCHAR}, #{actualLocationCode,jdbcType=VARCHAR}, 
+            #{createTime,jdbcType=TIMESTAMP}, #{putawayTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, 
+            #{operatorId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway"
+            useGeneratedKeys="true" keyProperty="sid" keyColumn="sid">
+        insert into t_quality_box_putaway
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="putawayId != null">
+                putaway_id,
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code,
+            </if>
+            <if test="sealBoxSerialNumber != null">
+                seal_box_serial_number,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="skuFloor != null">
+                sku_floor,
+            </if>
+            <if test="floorBoxNumber != null">
+                floor_box_number,
+            </if>
+            <if test="listBoxNumber != null">
+                list_box_number,
+            </if>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number,
+            </if>
+            <if test="actualPutawayNumber != null">
+                actual_putaway_number,
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code,
+            </if>
+            <if test="actualLocationCode != null">
+                actual_location_code,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="putawayTime != null">
+                putaway_time,
+            </if>
+            <if test="operator != null">
+                operator,
+            </if>
+            <if test="operatorId != null">
+                operator_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="putawayId != null">
+                #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouseCode != null">
+                #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sealBoxSerialNumber != null">
+                #{sealBoxSerialNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="skuFloor != null">
+                #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="floorBoxNumber != null">
+                #{floorBoxNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="listBoxNumber != null">
+                #{listBoxNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedPutawayNumber != null">
+                #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="actualPutawayNumber != null">
+                #{actualPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="recommendedLocationCode != null">
+                #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="actualLocationCode != null">
+                #{actualLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="putawayTime != null">
+                #{putawayTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="operatorId != null">
+                #{operatorId,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        update t_quality_box_putaway
+        <set>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="actualPutawayNumber != null">
+                actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="actualLocationCode != null">
+                actual_location_code = #{actualLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="putawayTime != null">
+                putaway_time = #{putawayTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <where>
+        	<if test="warehouseCode != null">
+                and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+        	<if test="waybillNumber != null">
+                and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+        	<if test="sku != null">
+                and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+        	<if test="listBoxNumber != null">
+                and list_box_number = #{listBoxNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+        </where>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway">
+        update t_quality_box_putaway
+        set putaway_id = #{putawayId,jdbcType=VARCHAR},
+            warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            seal_box_serial_number = #{sealBoxSerialNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            floor_box_number = #{floorBoxNumber,jdbcType=VARCHAR},
+            list_box_number = #{listBoxNumber,jdbcType=VARCHAR},
+            planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER},
+            recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            actual_location_code = #{actualLocationCode,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            putaway_time = #{putawayTime,jdbcType=TIMESTAMP},
+            operator = #{operator,jdbcType=VARCHAR},
+            operator_id = #{operatorId,jdbcType=INTEGER},
+            status = #{status,jdbcType=TINYINT}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxPutaway" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_box_putaway
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="putawayId != null and putawayId != ''">
+                 and putaway_id = #{putawayId,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                 and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+            <if test="sealBoxSerialNumber != null and sealBoxSerialNumber != ''">
+                 and seal_box_serial_number = #{sealBoxSerialNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="skuFloor != null and skuFloor != ''">
+                 and sku_floor = #{skuFloor,jdbcType=VARCHAR}
+            </if>
+            <if test="floorBoxNumber != null and floorBoxNumber != ''">
+                 and floor_box_number = #{floorBoxNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="listBoxNumber != null and listBoxNumber != ''">
+                 and list_box_number = #{listBoxNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="plannedPutawayNumber != null and plannedPutawayNumber != ''">
+                 and planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER}
+            </if>
+            <if test="actualPutawayNumber != null and actualPutawayNumber != ''">
+                 and actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER}
+            </if>
+            <if test="recommendedLocationCode != null and recommendedLocationCode != ''">
+                 and recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR}
+            </if>
+            <if test="actualLocationCode != null and actualLocationCode != ''">
+                 and actual_location_code = #{actualLocationCode,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="putawayTime != null and putawayTime != ''">
+                 and putaway_time = #{putawayTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="operator != null and operator != ''">
+                 and operator = #{operator,jdbcType=VARCHAR}
+            </if>
+            <if test="operatorId != null and operatorId != ''">
+                 and operator_id = #{operatorId,jdbcType=INTEGER}
+            </if>
+            <if test="status != null and status != ''">
+                 and status = #{status,jdbcType=TINYINT}
+            </if>
+        </trim>
+    </select>
+    
+    <!--根据sku及运单号，查询封箱总数-->
+    <select id="selectBoxSkuSum" parameterType="java.lang.String" resultType="java.lang.Integer">
+            SELECT SUM(planned_putaway_number) 	FROM t_quality_box_putaway
+            WHERE waybill_number =#{waybillId}  AND sku = #{sku}
+            AND sku_floor = #{skuFloor}
+    </select>
+
+    <!--查询上架详情-->
+    <select id="selectByPutawayId" parameterType="java.lang.String" resultMap="BaseResultMap">
+            SELECT a.sid, a.waybill_number, a.sku, a.planned_putaway_number, a.actual_putaway_number, a.`status`, a.recommended_location_code, a.actual_location_code, a.putaway_time, a.operator, b.produce_time, b.quality_time, b.expiration_time FROM t_quality_box_putaway a
+            LEFT JOIN receive_good_details b ON a.waybill_number = b.waybill_id AND a.sku = b.sku
+            WHERE a.putaway_id = #{putawayId}
+    </select>
+
+</mapper>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.PutawayShelfMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="sku_remain_num" jdbcType="INTEGER" property="skuRemainNum" />
+        <result column="planned_putaway_number" jdbcType="INTEGER" property="plannedPutawayNumber" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="sku_floor" jdbcType="VARCHAR" property="skuFloor" />
+        <result column="recommended_location_code" jdbcType="VARCHAR" property="recommendedLocationCode" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, waybill_number, sku, sku_remain_num, planned_putaway_number, warehouse_code, 
+        sku_floor, recommended_location_code, create_time, update_time, version
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_putaway_shelf
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_putaway_shelf
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        insert into t_putaway_shelf (sid, waybill_number, sku, 
+            sku_remain_num, planned_putaway_number, warehouse_code, 
+            sku_floor, recommended_location_code, create_time, 
+            update_time, version)
+        values (#{sid,jdbcType=BIGINT}, #{waybillNumber,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, 
+            #{skuRemainNum,jdbcType=INTEGER}, #{plannedPutawayNumber,jdbcType=INTEGER}, #{warehouseCode,jdbcType=VARCHAR}, 
+            #{skuFloor,jdbcType=VARCHAR}, #{recommendedLocationCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        insert into t_putaway_shelf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="skuRemainNum != null">
+                sku_remain_num,
+            </if>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number,
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code,
+            </if>
+            <if test="skuFloor != null">
+                sku_floor,
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="version != null">
+                version
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="skuRemainNum != null">
+                #{skuRemainNum,jdbcType=INTEGER},
+            </if>
+            <if test="plannedPutawayNumber != null">
+                #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="warehouseCode != null">
+                #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="skuFloor != null">
+                #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="recommendedLocationCode != null">
+                #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        update t_putaway_shelf
+        <set>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="skuRemainNum != null">
+                sku_remain_num = #{skuRemainNum,jdbcType=INTEGER},
+            </if>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="skuFloor != null">
+                sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        update t_putaway_shelf
+        set waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            sku_remain_num = #{skuRemainNum,jdbcType=INTEGER},
+            planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} AND version = #{version,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_putaway_shelf
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="skuRemainNum != null and skuRemainNum != ''">
+                 and sku_remain_num = #{skuRemainNum,jdbcType=INTEGER}
+            </if>
+            <if test="plannedPutawayNumber != null and plannedPutawayNumber != ''">
+                 and planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                 and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+            <if test="skuFloor != null and skuFloor != ''">
+                 and sku_floor = #{skuFloor,jdbcType=VARCHAR}
+            </if>
+            <if test="recommendedLocationCode != null and recommendedLocationCode != ''">
+                 and recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                 and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--查询货位分配信息-->
+    <select id="selectByObj" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf" resultMap="BaseResultMap">
+            SELECT * FROM t_putaway_shelf
+            WHERE sku_floor = #{skuFloor}
+            AND waybill_number = #{waybillNumber}
+            AND sku = #{sku}
+            AND recommended_location_code = #{recommendedLocationCode}
+            AND warehouse_code = #{warehouseCode}
+    </select>
+
+    <!--根据运单+sku+楼层查询已分配上架-->
+    <select id="selectDistributed" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf" resultMap="BaseResultMap">
+            SELECT * FROM t_putaway_shelf
+            WHERE sku_floor = #{skuFloor}
+            AND waybill_number = #{waybillNumber}
+            AND sku = #{sku}
+            AND warehouse_code = #{warehouseCode}
+    </select>
+
+    <!--根据主键更新剩余未封箱sku-->
+    <update id="updateRemainNumByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        update t_putaway_shelf
+        <set>
+            sku_remain_num = #{skuRemainNum,jdbcType=INTEGER},
+            <if test="plannedPutawayNumber != null and plannedPutawayNumber != ''">
+                planned_putaway_number = #{plannedPutawayNumber},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <!--根据仓库+运单+SKU+楼层更新剩余封箱sku-->
+    <update id="updateByWaybillAndSkuAndFloor" parameterType="com.brandslink.cloud.inbound.entity.PutawayShelf">
+        update t_putaway_shelf
+        <set>
+            sku_remain_num = #{skuRemainNum,jdbcType=INTEGER},
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where  warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+               and sku = #{sku,jdbcType=VARCHAR} and sku_floor = #{skuFloor,jdbcType=VARCHAR} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <!--查询未封箱运单的sku-->
+    <select id="selectUnSealFloor" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT a.sku_floor FROM t_putaway_shelf a WHERE a.waybill_number = #{waybillNumber} AND a.sku = #{sku} AND a.sku_remain_num > 0
+    </select>
+
+</mapper>

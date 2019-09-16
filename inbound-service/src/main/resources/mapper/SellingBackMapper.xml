@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.SellingBackMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.SellingBack">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="selling_back_id" jdbcType="VARCHAR" property="sellingBackId" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="selling_back_type" jdbcType="VARCHAR" property="sellingBackType" />
+        <result column="platform" jdbcType="VARCHAR" property="platform" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="logistics" jdbcType="VARCHAR" property="logistics" />
+        <result column="mailing_method" jdbcType="VARCHAR" property="mailingMethod" />
+        <result column="parcel_id" jdbcType="VARCHAR" property="parcelId" />
+        <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+        <result column="receiver_id" jdbcType="INTEGER" property="receiverId" />
+        <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="customer" jdbcType="VARCHAR" property="customer" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="quality_type" jdbcType="VARCHAR" property="qualityType" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, source_id, selling_back_id, warehouse, status, selling_back_type, platform, waybill_id, 
+        logistics, mailing_method, parcel_id, receiver, receiver_id, receive_time, create_time, remark,customer,customer_name,quality_type
+    </sql>
+    
+    <select id="findAll" parameterType="com.brandslink.cloud.inbound.entity.SellingBack" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from selling_back
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                 and source_id like "%"#{sourceId,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="sellingBackId != null and sellingBackId != '' ">
+                 and selling_back_id like "%"#{sellingBackId,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="warehouse != null and warehouse != '' ">
+                 and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != '' ">
+                 and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="sellingBackType != null and sellingBackType != '' ">
+                 and selling_back_type = #{sellingBackType,jdbcType=VARCHAR}
+            </if>
+            <if test="platform != null and platform != '' ">
+                 and platform = #{platform,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != '' ">
+                 and waybill_id like "%"#{waybillId,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="logistics != null and logistics != '' ">
+                 and logistics = #{logistics,jdbcType=VARCHAR}
+            </if>
+            <if test="receiver != null and receiver != '' ">
+                 and receiver like "%"#{receiver,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                 and receive_time &gt;=#{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                 and receive_time &lt;=#{endTime}
+            </if>
+            <if test="warehouseCodes != null ">
+                and warehouse in
+                <foreach collection="warehouseCodes" index="index" item="warehouseCode" open="(" separator="," close=")">
+                   #{warehouseCode}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+	        <when test="orderStatus == 'desc' ">
+	            order by receive_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' ">
+	            order by receive_time 
+	        </when>
+	        <otherwise>
+	        	order by receive_time desc
+	        </otherwise>
+        </choose>
+    </select>
+    
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBack">
+        update selling_back
+        <set>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="receiver != null and receiver != '' ">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                receiver_id = #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null and remark != '' ">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+        	<if test="waybillId != null and waybillId != '' ">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+        	<if test="id != null">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+        	<if test="sourceId != null and sourceId != '' ">
+                 and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="sellingBackId != null and sellingBackId != '' ">
+                 and selling_back_id = #{sellingBackId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+    
+    
+    
+    <select id="selectSellingBackIdByDate" parameterType="java.lang.String" resultType="java.lang.String">
+        select 
+        selling_back_id
+        from selling_back
+        where selling_back_id like "%"#{dateString,jdbcType=VARCHAR}"%"
+    </select>
+    
+    
+    <select id="excelExport" parameterType="java.util.List" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from selling_back
+        where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and status = '4'
+    </select>
+    
+    
+    
+    <select id="checkCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select 
+        count(*)
+        from selling_back
+        where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from selling_back
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from selling_back
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.SellingBack">
+        insert into selling_back (id, source_id, selling_back_id, 
+            warehouse, status, selling_back_type, 
+            platform, waybill_id, logistics, 
+            mailing_method, parcel_id, receiver, 
+            receiver_id, receive_time, create_time, remark, customer,customer_name,quality_type
+            )
+        values (#{id,jdbcType=INTEGER}, #{sourceId,jdbcType=VARCHAR}, #{sellingBackId,jdbcType=VARCHAR}, 
+            #{warehouse,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{sellingBackType,jdbcType=VARCHAR}, 
+            #{platform,jdbcType=VARCHAR}, #{waybillId,jdbcType=VARCHAR}, #{logistics,jdbcType=VARCHAR}, 
+            #{mailingMethod,jdbcType=VARCHAR}, #{parcelId,jdbcType=VARCHAR}, #{receiver,jdbcType=VARCHAR}, 
+            #{receiverId,jdbcType=INTEGER}, #{receiveTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{remark,jdbcType=VARCHAR}, #{customer,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, #{qualityType,jdbcType=VARCHAR}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBack">
+        insert into selling_back
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="sellingBackId != null">
+                selling_back_id,
+            </if>
+            <if test="warehouse != null">
+                warehouse,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sellingBackType != null">
+                selling_back_type,
+            </if>
+            <if test="platform != null">
+                platform,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="logistics != null">
+                logistics,
+            </if>
+            <if test="mailingMethod != null">
+                mailing_method,
+            </if>
+            <if test="parcelId != null">
+                parcel_id,
+            </if>
+            <if test="receiver != null">
+                receiver,
+            </if>
+            <if test="receiverId != null">
+                receiver_id,
+            </if>
+            <if test="receiveTime != null">
+                receive_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="customer != null">
+                customer,
+            </if>
+            <if test="customerName != null">
+                customer_name,
+            </if>
+            <if test="qualityType != null">
+                quality_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="sellingBackId != null">
+                #{sellingBackId,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="sellingBackType != null">
+                #{sellingBackType,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="logistics != null">
+                #{logistics,jdbcType=VARCHAR},
+            </if>
+            <if test="mailingMethod != null">
+                #{mailingMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="parcelId != null">
+                #{parcelId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiver != null">
+                #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="customer != null">
+                #{customer,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityType != null">
+                #{qualityType,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBack">
+        update selling_back
+        <set>
+            <if test="sourceId != null">
+                source_id = #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="sellingBackId != null">
+                selling_back_id = #{sellingBackId,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                warehouse = #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="sellingBackType != null">
+                selling_back_type = #{sellingBackType,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="logistics != null">
+                logistics = #{logistics,jdbcType=VARCHAR},
+            </if>
+            <if test="mailingMethod != null">
+                mailing_method = #{mailingMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="parcelId != null">
+                parcel_id = #{parcelId,jdbcType=VARCHAR},
+            </if>
+            <if test="receiver != null">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                receiver_id = #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="customer != null">
+                customer = #{customer,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    
+
+    <!--根据运单查询销退单信息-->
+    <select id="selectSellingBackIdByWaybill" resultMap="BaseResultMap">
+            SELECT * FROM selling_back WHERE waybill_id = #{waybillNumber}
+    </select>
+
+    <!--查询销退单列表-->
+    <select id="selectSellListBySourceId" resultMap="BaseResultMap">
+            SELECT * FROM selling_back WHERE source_id = #{sourceNumber}
+    </select>
+</mapper>

@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.ReceiveGoodDetailsMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="box_id" jdbcType="VARCHAR" property="boxId" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+        <result column="good_type" jdbcType="VARCHAR" property="goodType" />
+        <result column="weight" jdbcType="DOUBLE" property="weight" />
+        <result column="produce_time" jdbcType="VARCHAR" property="produceTime" />
+        <result column="quality_time" jdbcType="VARCHAR" property="qualityTime" />
+        <result column="expiration_time" jdbcType="VARCHAR" property="expirationTime" />
+        <result column="planned_quantity" jdbcType="INTEGER" property="plannedQuantity" />
+        <result column="delivery_quantity" jdbcType="INTEGER" property="deliveryQuantity" />
+        <result column="differ_quantity" jdbcType="INTEGER" property="differQuantity" />
+        <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+        <result column="receiver_id" jdbcType="INTEGER" property="receiverId" />
+        <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="card_board_id" jdbcType="VARCHAR" property="cardBoardId" />
+        <result column="exception_mark" jdbcType="SMALLINT" property="exceptionMark" />
+        <result column="priority" jdbcType="SMALLINT" property="priority" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, source_id, box_id, waybill_id, sku, good_name, good_type, weight, produce_time, 
+        quality_time, expiration_time, planned_quantity, delivery_quantity, differ_quantity, 
+        receiver, receiver_id, receive_time, create_time, card_board_id, exception_mark, 
+        priority
+    </sql>
+    
+    <resultMap id="CardBoardResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="weight" jdbcType="DOUBLE" property="weight" />
+        <result column="receiver" jdbcType="VARCHAR" property="receiver" />
+        <collection property="receiveArrivalNotice" javaType="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+            <id column="id" jdbcType="INTEGER" property="id" />
+            <result column="customer" jdbcType="VARCHAR" property="customer" />
+        	<result column="source_type" jdbcType="SMALLINT" property="sourceType" />
+        	<result column="warehouse" jdbcType="SMALLINT" property="warehouse" />
+        	<result column="creater" jdbcType="VARCHAR" property="creater" />
+        </collection>
+    </resultMap>
+    
+    
+    <!-- 查询商品详情 -->
+    <select id="selectGoodDetailsSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/>
+        from receive_good_details 
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != '' ">
+                and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    
+    
+    <!-- 联查商品信息 -->
+    <select id="selectInfoById" parameterType="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails" resultMap="CardBoardResultMap">
+        select 
+        d.id,d.waybill_id,d.source_id,d.receiver,d.weight,
+        n.id,n.warehouse,n.source_type,n.creater,n.customer
+        from receive_good_details d
+        left join receive_arrival_notice n
+        on d.source_id = n.source_id
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and d.source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != '' ">
+                and d.waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    
+
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails">
+        update receive_good_details
+        <set>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="receiver != null">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                receiver_id = #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id = #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+        	<if test="sourceId != null and sourceId != ''">
+                 and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+    
+    
+    <select id="checkWayBillIdAmount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        count(*)
+        from receive_good_details
+        where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <select id="checkWayBillIdAmountWhenUpdate"  resultType="java.lang.Integer">
+        select
+        count(*)
+        from receive_good_details
+        where waybill_id = #{waybillId,jdbcType=VARCHAR} and source_id != #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <!--根据运单号查询到货详情-->
+    <select id="selectInfoByWaybillNum" resultMap="BaseResultMap">
+            SELECT receive_good_details.source_id FROM receive_good_details
+            WHERE receive_good_details.waybill_id = #{waybillNum}
+    </select>
+    
+    <!--根据来源单号查询商品详情-->
+    <select id="selectInfoBySourceId"  resultMap="BaseResultMap">
+            SELECT <include refid="Base_Column_List" /> FROM receive_good_details
+            WHERE source_id = #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 根据来源单号查询商品sku -->
+    <select id="selectSkuBySourceId"  resultType="java.lang.String">
+            SELECT sku FROM receive_good_details
+            WHERE source_id = #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 根据来源单号查询商品sku -->
+    <select id="selectWayBillIdBySourceId"  resultType="java.lang.String">
+            SELECT waybill_id FROM receive_good_details
+            WHERE source_id = #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    <!--根据运单号查询-->
+    <select id="selectCountByWaybillId" resultType="java.lang.Integer">
+            SELECT IFNULL(SUM(planned_quantity),0)  FROM receive_good_details WHERE waybill_id = #{waybillNumber}
+    </select>
+
+    <!--根据卡板号及运单号查询运单信息-->
+    <select id="selectByCardBoardIdAndWaybillNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+           SELECT b.source_id,b.waybill_id,b.sku,b.planned_quantity FROM receive_card_board_create a
+           LEFT JOIN receive_good_details b ON a.waybill_id = b.waybill_id
+           WHERE a.waybill_id = #{waybillNumUpperCase} AND a.card_board_id = #{cardBoardUpperCase} GROUP BY b.waybill_id, b.sku
+    </select>
+
+    <!--根据卡板号及来源单号查询运单信息-->
+    <select id="selectByCardBoardIdAndSourceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+            SELECT b.source_id,b.waybill_id,b.sku,b.planned_quantity FROM receive_card_board_create a
+            LEFT JOIN receive_good_details b ON a.waybill_id = b.waybill_id
+            WHERE a.source_id = #{sourceId} AND a.card_board_id = #{cardBoardUpperCase} GROUP BY  a.waybill_id
+    </select>
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_good_details
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from receive_good_details
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.dto.ReceiveGoodDetailsInfo">
+        insert into receive_good_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="boxId != null">
+                box_id,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="goodName != null">
+                good_name,
+            </if>
+            <if test="goodType != null">
+                good_type,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="produceTime != null">
+                produce_time,
+            </if>
+            <if test="qualityTime != null">
+                quality_time,
+            </if>
+            <if test="expirationTime != null">
+                expiration_time,
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity,
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity,
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity,
+            </if>
+            <if test="receiver != null">
+                receiver,
+            </if>
+            <if test="receiverId != null">
+                receiver_id,
+            </if>
+            <if test="receiveTime != null">
+                receive_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id,
+            </if>
+            <if test="exceptionMark != null">
+                exception_mark,
+            </if>
+            <if test="priority != null">
+                priority,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="boxId != null">
+                #{boxId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodName != null">
+                #{goodName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodType != null">
+                #{goodType,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="produceTime != null">
+                #{produceTime,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityTime != null">
+                #{qualityTime,jdbcType=VARCHAR},
+            </if>
+            <if test="expirationTime != null">
+                #{expirationTime,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="receiver != null">
+                #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardBoardId != null">
+                #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionMark != null">
+                #{exceptionMark,jdbcType=SMALLINT},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=SMALLINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveGoodDetails">
+        update receive_good_details
+        <set>
+            <if test="boxId != null">
+                box_id = #{boxId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodName != null">
+                good_name = #{goodName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodType != null">
+                good_type = #{goodType,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="produceTime != null">
+                produce_time = #{produceTime,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityTime != null">
+                quality_time = #{qualityTime,jdbcType=VARCHAR},
+            </if>
+            <if test="expirationTime != null">
+                expiration_time = #{expirationTime,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="receiver != null">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                receiver_id = #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id = #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != '' ">
+                and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+
+    <!--新增运单详情，存在就更新，不存在就新添-->
+    <update id="insertUpdateSelective" >
+        insert INTO receive_good_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="boxId != null">
+                box_id,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="goodName != null">
+                good_name,
+            </if>
+            <if test="goodType != null">
+                good_type,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="produceTime != null">
+                produce_time,
+            </if>
+            <if test="qualityTime != null">
+                quality_time,
+            </if>
+            <if test="expirationTime != null">
+                expiration_time,
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity,
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity,
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity,
+            </if>
+            <if test="receiver != null">
+                receiver,
+            </if>
+            <if test="receiverId != null">
+                receiver_id,
+            </if>
+            <if test="receiveTime != null">
+                receive_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id,
+            </if>
+            <if test="exceptionMark != null">
+                exception_mark,
+            </if>
+            <if test="priority != null">
+                priority,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="boxId != null">
+                #{boxId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodName != null">
+                #{goodName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodType != null">
+                #{goodType,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="produceTime != null">
+                #{produceTime,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityTime != null">
+                #{qualityTime,jdbcType=VARCHAR},
+            </if>
+            <if test="expirationTime != null">
+                #{expirationTime,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="receiver != null">
+                #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardBoardId != null">
+                #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionMark != null">
+                #{exceptionMark,jdbcType=SMALLINT},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=SMALLINT},
+            </if>
+        </trim>
+        ON DUPLICATE KEY UPDATE
+            <trim suffixOverrides=",">
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="sourceId != null">
+                source_id = #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="boxId != null">
+                box_id = #{boxId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodName != null">
+                good_name = #{goodName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodType != null">
+                good_type = #{goodType,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="produceTime != null">
+                produce_time = #{produceTime,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityTime != null">
+                quality_time = #{qualityTime,jdbcType=VARCHAR},
+            </if>
+            <if test="expirationTime != null">
+                expiration_time = #{expirationTime,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="receiver != null">
+                receiver = #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="receiverId != null">
+                receiver_id = #{receiverId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveTime != null">
+                receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id = #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionMark != null">
+                exception_mark = #{exceptionMark,jdbcType=SMALLINT},
+            </if>
+            <if test="priority != null">
+                priority = #{priority,jdbcType=SMALLINT},
+            </if>
+            </trim>
+    </update>
+
+    <!--根据运单删除未确认的订单-->
+    <delete id="deleteUnconfirmedByWaybillId">
+           delete from receive_good_details
+           where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

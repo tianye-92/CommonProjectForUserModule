@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityBoxAssistantsMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityBoxAssistants">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="box_sid" jdbcType="BIGINT" property="boxSid" />
+        <result column="assistants_sid" jdbcType="BIGINT" property="assistantsSid" />
+        <result column="seal_num" jdbcType="INTEGER" property="sealNum" />
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, box_sid, assistants_sid, seal_num, version
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_box_assistants
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_box_assistants
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants">
+        insert into t_quality_box_assistants (sid, box_sid, assistants_sid, 
+            seal_num, version)
+        values (#{sid,jdbcType=BIGINT}, #{boxSid,jdbcType=BIGINT}, #{assistantsSid,jdbcType=BIGINT}, 
+            #{sealNum,jdbcType=INTEGER}, #{version,jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants">
+        insert into t_quality_box_assistants
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="boxSid != null">
+                box_sid,
+            </if>
+            <if test="assistantsSid != null">
+                assistants_sid,
+            </if>
+            <if test="sealNum != null">
+                seal_num,
+            </if>
+            <if test="version != null">
+                version
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="boxSid != null">
+                #{boxSid,jdbcType=BIGINT},
+            </if>
+            <if test="assistantsSid != null">
+                #{assistantsSid,jdbcType=BIGINT},
+            </if>
+            <if test="sealNum != null">
+                #{sealNum,jdbcType=INTEGER},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants">
+        update t_quality_box_assistants
+        <set>
+            <if test="boxSid != null">
+                box_sid = #{boxSid,jdbcType=BIGINT},
+            </if>
+            <if test="assistantsSid != null">
+                assistants_sid = #{assistantsSid,jdbcType=BIGINT},
+            </if>
+            <if test="sealNum != null">
+                seal_num = #{sealNum,jdbcType=INTEGER},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants">
+        update t_quality_box_assistants
+        set box_sid = #{boxSid,jdbcType=BIGINT},
+            assistants_sid = #{assistantsSid,jdbcType=BIGINT},
+            seal_num = #{sealNum,jdbcType=INTEGER},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_box_assistants
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="boxSid != null and boxSid != ''">
+                 and box_sid = #{boxSid,jdbcType=BIGINT}
+            </if>
+            <if test="assistantsSid != null and assistantsSid != ''">
+                 and assistants_sid = #{assistantsSid,jdbcType=BIGINT}
+            </if>
+            <if test="sealNum != null and sealNum != ''">
+                 and seal_num = #{sealNum,jdbcType=INTEGER}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据协同人主键查询封箱关系-->
+    <select id="selectByZeroAndAssistantsSid" resultMap="BaseResultMap" parameterType="java.lang.Long">
+            SELECT * FROM t_quality_box_assistants WHERE assistants_sid = #{sid} AND box_sid = 0
+    </select>
+
+    <!--根据协同人主键更新封箱关系-->
+    <update id="updateByZeroAndAssistantsSid" parameterType="com.brandslink.cloud.inbound.entity.QualityBoxAssistants" >
+        UPDATE t_quality_box_assistants SET box_sid  = #{boxSid}, seal_num = #{sealNum}, version = #{version,jdbcType=INTEGER} + 1
+        WHERE assistants_sid = #{assistantsSid} AND t_quality_box_assistants.box_sid = 0  and version = #{version,jdbcType=INTEGER}
+    </update>
+</mapper>

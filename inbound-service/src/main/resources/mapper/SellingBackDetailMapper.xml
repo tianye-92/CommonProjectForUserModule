@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.SellingBackDetailMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="planned_quantity" jdbcType="INTEGER" property="plannedQuantity" />
+        <result column="delivery_quantity" jdbcType="INTEGER" property="deliveryQuantity" />
+        <result column="differ_quantity" jdbcType="INTEGER" property="differQuantity" />
+        <result column="qc_creater" jdbcType="VARCHAR" property="qcCreater" />
+        <result column="qc_creater_id" jdbcType="INTEGER" property="qcCreaterId" />
+        <result column="qc_time" jdbcType="TIMESTAMP" property="qcTime" />
+    </resultMap>
+
+    <!--销退单信息结果集-->
+    <resultMap id="SellingBackMap" type="com.brandslink.cloud.inbound.dto.SellingBackDetailDto">
+        <id column="sid" jdbcType="INTEGER" property="id"/>
+        <result column="quality_control_order_number" jdbcType="VARCHAR" property="qualityControlOrderNumber" />
+        <result column="selling_back_id" jdbcType="VARCHAR" property="sellingBackId"/>
+        <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl"/>
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId"/>
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId"/>
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse"/>
+        <result column="selling_back_type" jdbcType="VARCHAR" property="sellingBackType"/>
+        <result column="sku" jdbcType="VARCHAR" property="sku"/>
+        <result column="planned_quantity" jdbcType="INTEGER" property="plannedQuantity"/>
+        <result column="quality_control_finish_number" jdbcType="INTEGER" property="qualityControlFinishNumber"/>
+        <result column="delivery_quantity" jdbcType="INTEGER" property="deliveryQuantity"/>
+        <result column="seal_box_finish_number" jdbcType="INTEGER" property="sealBoxFinishNumber"/>
+        <result column="seal_box_unfinish_number" jdbcType="INTEGER" property="sealBoxUnfinishNumber"/>
+        <result column="sku_floor" jdbcType="VARCHAR" property="skuFloor"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, waybill_id, sku, planned_quantity, delivery_quantity, differ_quantity, qc_creater, 
+        qc_creater_id, qc_time
+    </sql>
+    
+    <!-- 收货数量统计 -->
+    <select id="quantityStatistics" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        sum(planned_quantity) as planned_quantity
+        from selling_back_detail
+        where waybill_id = (select waybill_id from selling_back where selling_back_id = #{sellingBackId,jdbcType=VARCHAR})
+    </select>
+    
+    
+    <!-- 查询销退单号下的sku -->
+    <select id="selectInfoBySellingBackId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" />
+        from selling_back_detail
+        where waybill_id = (select waybill_id from selling_back where selling_back_id = #{sellingBackId,jdbcType=VARCHAR})
+    </select>
+    
+    
+
+    <select id="selectInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from selling_back_detail
+        where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        update selling_back_detail
+        <set>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="qcCreater != null">
+                qc_creater = #{qcCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="qcCreaterId != null">
+                qc_creater_id = #{qcCreaterId,jdbcType=INTEGER},
+            </if>
+            <if test="qcTime != null">
+                qc_time = #{qcTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <where>
+        	<if test="id != null">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+
+
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from selling_back_detail
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from selling_back_detail
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        insert into selling_back_detail (id, waybill_id, sku, 
+            planned_quantity, delivery_quantity, differ_quantity, 
+            qc_creater, qc_creater_id, qc_time
+            )
+        values (#{id,jdbcType=INTEGER}, #{waybillId,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, 
+            #{plannedQuantity,jdbcType=INTEGER}, #{deliveryQuantity,jdbcType=INTEGER}, #{differQuantity,jdbcType=INTEGER}, 
+            #{qcCreater,jdbcType=VARCHAR}, #{qcCreaterId,jdbcType=INTEGER}, #{qcTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        insert into selling_back_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity,
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity,
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity,
+            </if>
+            <if test="qcCreater != null">
+                qc_creater,
+            </if>
+            <if test="qcCreaterId != null">
+                qc_creater_id,
+            </if>
+            <if test="qcTime != null">
+                qc_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="qcCreater != null">
+                #{qcCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="qcCreaterId != null">
+                #{qcCreaterId,jdbcType=INTEGER},
+            </if>
+            <if test="qcTime != null">
+                #{qcTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        update selling_back_detail
+        <set>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="qcCreater != null">
+                qc_creater = #{qcCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="qcCreaterId != null">
+                qc_creater_id = #{qcCreaterId,jdbcType=INTEGER},
+            </if>
+            <if test="qcTime != null">
+                qc_time = #{qcTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail">
+        update selling_back_detail
+        set waybill_id = #{waybillId,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            qc_creater = #{qcCreater,jdbcType=VARCHAR},
+            qc_creater_id = #{qcCreaterId,jdbcType=INTEGER},
+            qc_time = #{qcTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.SellingBackDetail" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from selling_back_detail
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="plannedQuantity != null and plannedQuantity != ''">
+                 and planned_quantity = #{plannedQuantity,jdbcType=INTEGER}
+            </if>
+            <if test="deliveryQuantity != null and deliveryQuantity != ''">
+                 and delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER}
+            </if>
+            <if test="differQuantity != null and differQuantity != ''">
+                 and differ_quantity = #{differQuantity,jdbcType=INTEGER}
+            </if>
+            <if test="qcCreater != null and qcCreater != ''">
+                 and qc_creater = #{qcCreater,jdbcType=VARCHAR}
+            </if>
+            <if test="qcCreaterId != null and qcCreaterId != ''">
+                 and qc_creater_id = #{qcCreaterId,jdbcType=INTEGER}
+            </if>
+            <if test="qcTime != null and qcTime != ''">
+                 and qc_time = #{qcTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据销退运单号查询货物信息-->
+    <select id="getSellingBackDetailsByWaybillNum" resultMap="SellingBackMap">
+            SELECT c.sid,  d.quality_control_order_number, a.selling_back_id, c.picture_url, a.waybill_id, a.source_id, a.selling_back_type, b.sku, b.delivery_quantity, b.planned_quantity, c.quality_control_finish_number, c.seal_box_finish_number,
+            c.seal_box_unfinish_number, c.sku_floor, c.remark FROM selling_back a
+            LEFT JOIN selling_back_detail b
+            ON a.waybill_id = b.waybill_id
+            LEFT JOIN t_quality_control_details c
+            ON a.waybill_id = c.waybill_number  AND b.sku = c.sku
+              LEFT JOIN t_quality_control_list d ON a.waybill_id = d.waybill_number
+            WHERE a.waybill_id = #{waybillNum}
+    </select>
+
+    <!--根据来源单号查询销退货物详情 -->
+    <select id="getSellingBackBySourceNumber" resultMap="SellingBackMap">
+            SELECT  c.sid, d.quality_control_order_number, a.selling_back_id, c.picture_url, a.waybill_id, a.source_id, a.selling_back_type, b.sku, b.delivery_quantity, b.planned_quantity, c.quality_control_finish_number, c.seal_box_finish_number,
+             c.seal_box_unfinish_number, c.sku_floor, c.remark FROM selling_back a
+            LEFT JOIN selling_back_detail b
+            ON a.waybill_id = b.waybill_id
+            LEFT JOIN t_quality_control_details c
+            ON a.waybill_id = c.waybill_number AND b.sku = c.sku
+            LEFT JOIN t_quality_control_list d ON a.waybill_id = d.waybill_number
+            WHERE a.source_id = #{sourceNumber}
+    </select>
+
+    <!--根据运单号查询运单计划总数量-->
+    <select id="selectCountByWaybillId" resultType="java.lang.Integer">
+            SELECT SUM(planned_quantity) FROM selling_back_detail WHERE waybill_id = #{waybillNumber}
+    </select>
+
+    <!-- 根据来源单查询销退单信息-->
+    <select id="selectBySourceId" resultMap="SellingBackMap">
+            SELECT b.*, a.source_id, a.selling_back_type, a.warehouse  FROM selling_back a
+            LEFT JOIN selling_back_detail b ON a.waybill_id = b.waybill_id
+            WHERE a.source_id = #{sourceNumber}
+    </select>
+
+    <!-- 根据运单查询销退单信息-->
+    <select id="selectByWaybillId" resultMap="SellingBackMap">
+            SELECT b.*, a.source_id, a.selling_back_type, a.warehouse  FROM selling_back a
+            LEFT JOIN selling_back_detail b ON a.waybill_id = b.waybill_id
+            WHERE a.waybill_id = #{waybillNum}
+    </select>
+</mapper>

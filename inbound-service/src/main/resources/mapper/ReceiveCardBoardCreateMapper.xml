@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.ReceiveCardBoardCreateMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="card_board_id" jdbcType="VARCHAR" property="cardBoardId" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="card_board_create_number" jdbcType="VARCHAR" property="cardBoardCreateNumber" />
+        <result column="card_creater" jdbcType="VARCHAR" property="cardCreater" />
+        <result column="card_creater_id" jdbcType="INTEGER" property="cardCreaterId" />
+        <result column="synergy_name" jdbcType="VARCHAR" property="synergyName" />
+        <result column="synergy_id" jdbcType="INTEGER" property="synergyId" />
+        <result column="card_start_time" jdbcType="TIMESTAMP" property="cardStartTime" />
+        <result column="card_finish_time" jdbcType="TIMESTAMP" property="cardFinishTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="reserve1" jdbcType="VARCHAR" property="reserve1" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, card_board_id, source_id, waybill_id, card_board_create_number, card_creater, 
+        card_creater_id, synergy_name, synergy_id, card_start_time, card_finish_time, create_time, 
+        reserve1
+    </sql>
+    
+    <!-- 查询当天时间内的流水号 -->
+    <select id="selectCardBoardCreateIdByDate"  parameterType="java.lang.String"  resultType="java.lang.String">
+        select card_board_id from receive_card_board_create
+        where card_board_id like "%"#{dateString,jdbcType=VARCHAR}"%"
+    </select>
+    
+    
+    <delete id="deleteInfo" >
+        delete from receive_card_board_create
+        where source_id = #{sourceId,jdbcType=VARCHAR} and waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </delete>
+    
+    <select id="checkWayBillIdAmount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+        count(*)
+        from receive_card_board_create
+        where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </select>
+
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_card_board_create
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from receive_card_board_create
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate">
+        insert into receive_card_board_create (id, card_board_id, source_id, 
+            waybill_id, card_board_create_number, card_creater, 
+            card_creater_id, synergy_name, synergy_id, 
+            card_start_time, card_finish_time, create_time, 
+            reserve1)
+        values (#{id,jdbcType=INTEGER}, #{cardBoardId,jdbcType=VARCHAR}, #{sourceId,jdbcType=VARCHAR}, 
+            #{waybillId,jdbcType=VARCHAR}, #{cardBoardCreateNumber,jdbcType=VARCHAR}, #{cardCreater,jdbcType=VARCHAR}, 
+            #{cardCreaterId,jdbcType=INTEGER}, #{synergyName,jdbcType=VARCHAR}, #{synergyId,jdbcType=INTEGER}, 
+            #{cardStartTime,jdbcType=TIMESTAMP}, #{cardFinishTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{reserve1,jdbcType=VARCHAR})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate"
+                                 useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into receive_card_board_create
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="cardBoardId != null">
+                card_board_id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="cardBoardCreateNumber != null">
+                card_board_create_number,
+            </if>
+            <if test="cardCreater != null">
+                card_creater,
+            </if>
+            <if test="cardCreaterId != null">
+                card_creater_id,
+            </if>
+            <if test="synergyName != null">
+                synergy_name,
+            </if>
+            <if test="synergyId != null">
+                synergy_id,
+            </if>
+            <if test="cardStartTime != null">
+                card_start_time,
+            </if>
+            <if test="cardFinishTime != null">
+                card_finish_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="reserve1 != null">
+                reserve1,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="cardBoardId != null">
+                #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="cardBoardCreateNumber != null">
+                #{cardBoardCreateNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCreater != null">
+                #{cardCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCreaterId != null">
+                #{cardCreaterId,jdbcType=INTEGER},
+            </if>
+            <if test="synergyName != null">
+                #{synergyName,jdbcType=VARCHAR},
+            </if>
+            <if test="synergyId != null">
+                #{synergyId,jdbcType=INTEGER},
+            </if>
+            <if test="cardStartTime != null">
+                #{cardStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardFinishTime != null">
+                #{cardFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reserve1 != null">
+                #{reserve1,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate">
+        update receive_card_board_create
+        <set>
+            <if test="cardBoardId != null">
+                card_board_id = #{cardBoardId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null">
+                source_id = #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="cardBoardCreateNumber != null">
+                card_board_create_number = #{cardBoardCreateNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCreater != null">
+                card_creater = #{cardCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="cardCreaterId != null">
+                card_creater_id = #{cardCreaterId,jdbcType=INTEGER},
+            </if>
+            <if test="synergyName != null">
+                synergy_name = #{synergyName,jdbcType=VARCHAR},
+            </if>
+            <if test="synergyId != null">
+                synergy_id = #{synergyId,jdbcType=INTEGER},
+            </if>
+            <if test="cardStartTime != null">
+                card_start_time = #{cardStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cardFinishTime != null">
+                card_finish_time = #{cardFinishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reserve1 != null">
+                reserve1 = #{reserve1,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate">
+        update receive_card_board_create
+        set card_board_id = #{cardBoardId,jdbcType=VARCHAR},
+            source_id = #{sourceId,jdbcType=VARCHAR},
+            waybill_id = #{waybillId,jdbcType=VARCHAR},
+            card_board_create_number = #{cardBoardCreateNumber,jdbcType=VARCHAR},
+            card_creater = #{cardCreater,jdbcType=VARCHAR},
+            card_creater_id = #{cardCreaterId,jdbcType=INTEGER},
+            synergy_name = #{synergyName,jdbcType=VARCHAR},
+            synergy_id = #{synergyId,jdbcType=INTEGER},
+            card_start_time = #{cardStartTime,jdbcType=TIMESTAMP},
+            card_finish_time = #{cardFinishTime,jdbcType=TIMESTAMP},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            reserve1 = #{reserve1,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.ReceiveCardBoardCreate" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_card_board_create
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="cardBoardId != null and cardBoardId != ''">
+                 and card_board_id = #{cardBoardId,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                 and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+            <if test="cardBoardCreateNumber != null and cardBoardCreateNumber != ''">
+                 and card_board_create_number = #{cardBoardCreateNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="cardCreater != null and cardCreater != ''">
+                 and card_creater = #{cardCreater,jdbcType=VARCHAR}
+            </if>
+            <if test="cardCreaterId != null and cardCreaterId != ''">
+                 and card_creater_id = #{cardCreaterId,jdbcType=INTEGER}
+            </if>
+            <if test="synergyName != null and synergyName != ''">
+                 and synergy_name = #{synergyName,jdbcType=VARCHAR}
+            </if>
+            <if test="synergyId != null and synergyId != ''">
+                 and synergy_id = #{synergyId,jdbcType=INTEGER}
+            </if>
+            <if test="cardStartTime != null and cardStartTime != ''">
+                 and card_start_time = #{cardStartTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="cardFinishTime != null and cardFinishTime != ''">
+                 and card_finish_time = #{cardFinishTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="reserve1 != null and reserve1 != ''">
+                 and reserve1 = #{reserve1,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据卡板号查询货物信息-->
+    <select id="selectByCardBoardId" resultMap="BaseResultMap">
+            SELECT a.*, b.warehouse FROM receive_card_board_create a
+           LEFT JOIN receive_arrival_notice b ON a.source_id = b.source_id
+            <where>
+                a.card_board_id = #{cardBoardNum}
+                <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                    and a.source_id = #{sourceOrderNumber,jdbcType=VARCHAR}
+                </if>
+                <if test="waybillId != null and waybillId != ''">
+                    and a.waybill_id = #{waybillId,jdbcType=VARCHAR}
+                </if>
+            </where>
+    </select>
+</mapper>

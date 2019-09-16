@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityControlListMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityControlList">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="quality_control_order_number" jdbcType="VARCHAR" property="qualityControlOrderNumber" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceOrderNumber" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="qc_plan_total_number" jdbcType="INTEGER" property="qcPlanTotalNumber" />
+        <result column="qc_finish_total_number" jdbcType="INTEGER" property="qcFinishTotalNumber" />
+        <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+        <result column="create_id" jdbcType="BIGINT" property="createId" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_id" jdbcType="BIGINT" property="updateId" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+        <result column="assistants" jdbcType="VARCHAR" property="assistants" />
+        <result column="reserved" jdbcType="VARCHAR" property="reserved" />
+    </resultMap>
+    
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.brandslink.cloud.inbound.entity.QualityControlList">
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+
+    <!--质检单信息-->
+    <resultMap id="QcResponseInfo" type="com.brandslink.cloud.inbound.dto.QcListResponseDto">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="quality_control_order_number" jdbcType="VARCHAR" property="qualityControlOrderNumber" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceOrderNumber" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="qc_station_id" jdbcType="VARCHAR" property="qcStationId" />
+        <result column="source_type" jdbcType="INTEGER" property="sourceType" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+        <result column="sku_status" jdbcType="INTEGER" property="skuStatus" />
+        <result column="quality_type" jdbcType="VARCHAR" property="qcType" />
+        <result column="seal_box_serial_number" jdbcType="INTEGER" property="sealBoxSerialNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="qc_finish_total_number" jdbcType="INTEGER" property="qcFinishTotalNumber" />
+        <result column="sku_status" jdbcType="INTEGER" property="skuStatus" />
+        <result column="sku_create_time" jdbcType="TIMESTAMP" property="skuCreateTime" />
+        <result column="sku_update_time" jdbcType="TIMESTAMP" property="skuUpdateTime" />
+        <result column="produce_time" jdbcType="TIMESTAMP" property="produceTime" />
+        <result column="quality_time" jdbcType="INTEGER" property="qualityTime" />
+        <result column="expiration_time" jdbcType="TIMESTAMP" property="expirationTime" />
+        <result column="exception_box_number" jdbcType="VARCHAR" property="exceptionBoxNumber" />
+        <result column="exception_sku_count" jdbcType="INTEGER" property="exceptionSkuCount" />
+        <result column="exception_reporter_by" jdbcType="VARCHAR" property="exceptionReporterBy" />
+        <result column="exception_reporter_time" jdbcType="TIMESTAMP" property="exceptionReporterTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+        <result column="qc_plan_total_number" jdbcType="INTEGER" property="plannedQuantity" />
+        <result column="creater" jdbcType="VARCHAR" property="buyer" />
+        <result column="sign_in_creater" jdbcType="VARCHAR" property="signInCreater" />
+        <result column="sign_in_time" jdbcType="TIMESTAMP" property="signInTime" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+
+    <!--查询入库台账-->
+    <resultMap id="standingBookMap" type="com.brandslink.cloud.inbound.dto.InboundStandingBookResDto">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouseId" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="goodsOwner" jdbcType="VARCHAR" property="goodsOwner" />
+        <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="good_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="quality_control_finish_number" jdbcType="INTEGER" property="qcGoodsNum" />
+        <result column="actual_putaway_number" jdbcType="INTEGER" property="putawayNum" />
+        <result column="sku_create_time" jdbcType="VARCHAR" property="startTime" />
+        <result column="sku_update_time" jdbcType="TIMESTAMP" property="endTime" />
+        <result column="putaway_total_num" jdbcType="TIMESTAMP" property="putawayTotalNum" />
+        <result column="qc_total_num" jdbcType="TIMESTAMP" property="qcTotalNum" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, quality_control_order_number, source_order_number, waybill_number, qc_plan_total_number, 
+        qc_finish_total_number, order_status, create_id, create_by, create_time, update_id, 
+        update_by, update_time, finish_time, assistants, reserved
+    </sql>
+    
+    <sql id="Blob_Column_List">
+        remark, version
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_quality_control_list
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_control_list
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        insert into t_quality_control_list (sid, quality_control_order_number, source_order_number, 
+            waybill_number, qc_plan_total_number, qc_finish_total_number, 
+            order_status, create_id, create_by, 
+            create_time, update_id, update_by, 
+            update_time, finish_time, assistants, 
+            reserved, remark, version)
+        values (#{sid,jdbcType=BIGINT}, #{qualityControlOrderNumber,jdbcType=VARCHAR}, #{sourceOrderNumber,jdbcType=VARCHAR}, 
+            #{waybillNumber,jdbcType=VARCHAR}, #{qcPlanTotalNumber,jdbcType=INTEGER}, #{qcFinishTotalNumber,jdbcType=INTEGER}, 
+            #{orderStatus,jdbcType=TINYINT}, #{createId,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, 
+            #{createTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=BIGINT}, #{updateBy,jdbcType=VARCHAR}, 
+            #{updateTime,jdbcType=TIMESTAMP}, #{finishTime,jdbcType=TIMESTAMP}, #{assistants,jdbcType=VARCHAR}, 
+            #{reserved,jdbcType=VARCHAR}, #{remark,jdbcType=LONGVARCHAR}, #{version,jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        insert into t_quality_control_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number,
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="qcPlanTotalNumber != null">
+                qc_plan_total_number,
+            </if>
+            <if test="qcFinishTotalNumber != null">
+                qc_finish_total_number,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateId != null">
+                update_id,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="finishTime != null">
+                finish_time,
+            </if>
+            <if test="assistants != null">
+                assistants,
+            </if>
+            <if test="reserved != null">
+                reserved,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="version != null">
+                version
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qcPlanTotalNumber != null">
+                #{qcPlanTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="qcFinishTotalNumber != null">
+                #{qcFinishTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null">
+                #{updateId,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="assistants != null">
+                #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        update t_quality_control_list
+        <set>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qcPlanTotalNumber != null">
+                qc_plan_total_number = #{qcPlanTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="qcFinishTotalNumber != null">
+                qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="assistants != null">
+                assistants = #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                reserved = #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        update t_quality_control_list
+        set quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            qc_plan_total_number = #{qcPlanTotalNumber,jdbcType=INTEGER},
+            qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER},
+            order_status = #{orderStatus,jdbcType=TINYINT},
+            create_id = #{createId,jdbcType=BIGINT},
+            create_by = #{createBy,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_id = #{updateId,jdbcType=BIGINT},
+            update_by = #{updateBy,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            assistants = #{assistants,jdbcType=VARCHAR},
+            reserved = #{reserved,jdbcType=VARCHAR},
+            remark = #{remark,jdbcType=LONGVARCHAR},
+            version = #{#version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        update t_quality_control_list
+        set quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            qc_plan_total_number = #{qcPlanTotalNumber,jdbcType=INTEGER},
+            qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER},
+            order_status = #{orderStatus,jdbcType=TINYINT},
+            create_id = #{createId,jdbcType=BIGINT},
+            create_by = #{createBy,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_id = #{updateId,jdbcType=BIGINT},
+            update_by = #{updateBy,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            assistants = #{assistants,jdbcType=VARCHAR},
+            reserved = #{reserved,jdbcType=VARCHAR},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} AND version = #{version,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_quality_control_list
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="qualityControlOrderNumber != null and qualityControlOrderNumber != ''">
+                 and quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                 and source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="qcPlanTotalNumber != null and qcPlanTotalNumber != ''">
+                 and qc_plan_total_number = #{qcPlanTotalNumber,jdbcType=INTEGER}
+            </if>
+            <if test="qcFinishTotalNumber != null and qcFinishTotalNumber != ''">
+                 and qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                 and order_status = #{orderStatus,jdbcType=TINYINT}
+            </if>
+            <if test="createId != null and createId != ''">
+                 and create_id = #{createId,jdbcType=BIGINT}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                 and create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateId != null and updateId != ''">
+                 and update_id = #{updateId,jdbcType=BIGINT}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                 and update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                 and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="finishTime != null and finishTime != ''">
+                 and finish_time = #{finishTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="assistants != null and assistants != ''">
+                 and assistants = #{assistants,jdbcType=VARCHAR}
+            </if>
+            <if test="reserved != null and reserved != ''">
+                 and reserved = #{reserved,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null and remark != ''">
+                 and remark = #{remark,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据质检单对象动态更新数据-->
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        update t_quality_control_list
+        <set>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qcFinishTotalNumber != null">
+                qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="assistants != null">
+                assistants = #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                reserved = #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where waybill_number = #{waybillNumber,jdbcType=VARCHAR} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <!--根据来源单号更新质检单状态-->
+    <update id="updateBySourceOrderNum" parameterType="com.brandslink.cloud.inbound.entity.QualityControlList">
+        update t_quality_control_list
+        <set>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qcFinishTotalNumber != null">
+                qc_finish_total_number = #{qcFinishTotalNumber,jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateId != null">
+                update_id = #{updateId,jdbcType=BIGINT},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="assistants != null">
+                assistants = #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                reserved = #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <!--查询最后一条质检单号-->
+    <select id="selectLastData" resultType="java.lang.String">
+           SELECT quality_control_order_number FROM t_quality_control_list ORDER BY sid DESC LIMIT 1
+    </select>
+
+    <!--查询质检单列表-->
+    <select id="getQCList" parameterType="com.brandslink.cloud.inbound.dto.QcListRequestDto" resultMap="QcResponseInfo">
+        SELECT a.sid,a.quality_control_order_number, IFNULL(b.customer_name,c.customer_name) customer_name, a.source_order_number, a.waybill_number, IFNULL(b.source_type,2) source_type, IFNULL(b.warehouse,c.warehouse) warehouse, IFNULL(b.quality_type,c.quality_type) quality_type,
+        a.order_status,a.create_time,a.finish_time,a.qc_plan_total_number,a.qc_finish_total_number,
+        b.creater, a.create_by,a.remark, a.version
+        FROM t_quality_control_list a
+        LEFT JOIN receive_arrival_notice b
+        ON a.source_order_number = b.source_id
+        LEFT JOIN selling_back c
+        ON a.waybill_number = c.waybill_id
+        <where>
+            (b.warehouse IN
+            <foreach collection="warehouse" item="warehouseCode" index="index" open="(" close=")" separator=",">
+                #{warehouseCode}
+            </foreach>
+            OR c.warehouse IN
+            <foreach collection="warehouse" item="warehouseCode" index="index" open="(" close=")" separator=",">
+                #{warehouseCode}
+            </foreach>
+            )
+            <if test="customerName != null and customerName != ''">
+                AND b.customer_name = #{customerName}
+            </if>
+            <if test="qualityControlOrderNumber != null and qualityControlOrderNumber != ''">
+                AND a.quality_control_order_number = #{qualityControlOrderNumber}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                AND a.source_order_number = #{sourceOrderNumber}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND b.source_type = #{sourceType}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND a.order_status = #{orderStatus}
+            </if>
+            <if test="createTimeStart != null and createTimeStart != ''">
+                AND  a.create_time &gt;= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd != null and createTimeEnd != ''">
+                AND  a.create_time &lt;= #{createTimeEnd}
+            </if>
+        </where>
+        <choose>
+            <when test="order == 'asc' and orderField == 'createTime'">
+                ORDER BY a.create_time ASC
+            </when>
+            <when test="order == 'desc' and orderField == 'createTime'">
+                ORDER BY a.create_time DESC
+            </when>
+            <when test="order == 'asc' and orderField == 'finishTime'">
+                ORDER BY a.finish_time ASC
+            </when>
+            <when test="order == 'desc' and orderField == 'finishTime'">
+                ORDER BY a.finish_time DESC
+            </when>
+            <otherwise>
+                ORDER BY a.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--运单号查询质检单-->
+    <select id="selectQcListByWaybillId" resultMap="BaseResultMap">
+        SELECT * FROM t_quality_control_list
+        WHERE waybill_number = #{waybillNumber}
+    </select>
+
+    <!--查询入库台账-->
+    <select id="getStandingBookByObJ" parameterType="com.brandslink.cloud.inbound.dto.InboundStandingBookReqDto" resultMap="standingBookMap">
+        select * from(
+        SELECT a.id, IFNULL(b.warehouse,e.warehouse) warehouse, b.shipper goodsOwner, b.customer_name, IFNULL(b.source_type,2) source_type, IFNULL(b.source_id,e.source_id) source_id, IFNULL(a.sku, d.sku) sku, IFNULL(c.quality_control_finish_number,0) AS quality_control_finish_number,
+        IFNULL(d.actual_putaway_number, 0)  actual_putaway_number,a.good_name, c.sku_create_time, c.sku_update_time,b.customer
+        FROM receive_good_details a
+        LEFT JOIN selling_back e on a.source_id = e.source_id
+        LEFT JOIN receive_arrival_notice b ON a.source_id = b.source_id
+        LEFT JOIN (SELECT SUM(quality_control_finish_number) quality_control_finish_number, waybill_number, sku, sku_create_time, sku_update_time  FROM t_quality_control_details GROUP BY waybill_number, sku) c ON a.sku = c.sku AND a.waybill_id = c.waybill_number
+        LEFT JOIN ( SELECT sum( actual_putaway_number ) AS actual_putaway_number, waybill_number, sku, putaway_time FROM t_quality_box_putaway GROUP BY waybill_number, sku) d
+        ON a.sku = d.sku AND a.waybill_id = d.waybill_number) ta
+        where (ta.quality_control_finish_number <![CDATA[ <> ]]> 0 or ta.actual_putaway_number <![CDATA[ <> ]]> 0)
+            <if test="sku != null and sku != ''">
+                AND ta.sku = #{sku}
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                AND  ta.source_id = #{sourceId}
+            </if>
+           <!-- <if test="warehouseCode != null and warehouseCode != ''">
+                AND  ta.warehouse = #{warehouseCode}
+            </if>-->
+           <if test="warehouseCodeArray != null">
+              and ta.warehouse in
+              <foreach collection="warehouseCodeArray" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+              </foreach>
+            </if>
+            <if test="shipper != null and shipper != ''">
+                AND  ta.goodsOwner = #{shipper}
+            </if>
+            <if test=" customer!= null and customer != ''">
+                AND  ta.customer = #{customer}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND  ta.sku_create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND ta.sku_update_time &lt; #{endTime}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND  ta.source_type =  #{sourceType}
+            </if>
+        UNION
+        select * from(
+        SELECT a.id, IFNULL(b.warehouse,e.warehouse) warehouse, b.shipper goodsOwner, b.customer_name, IFNULL(b.source_type,2) source_type, IFNULL(b.source_id,e.source_id) source_id, IFNULL(a.sku,d.sku) sku, IFNULL(c.quality_control_finish_number,0) AS quality_control_finish_number,
+        IFNULL(d.actual_putaway_number, 0)  actual_putaway_number,a.good_name, c.sku_create_time, c.sku_update_time,b.customer
+        FROM receive_good_details a
+        Right JOIN selling_back e on a.source_id = e.source_id
+        LEFT JOIN receive_arrival_notice b ON a.source_id = b.source_id
+        LEFT JOIN (SELECT SUM(quality_control_finish_number) quality_control_finish_number, waybill_number, sku, sku_create_time, sku_update_time  FROM t_quality_control_details GROUP BY waybill_number, sku) c ON a.sku = c.sku AND a.waybill_id = c.waybill_number
+        LEFT JOIN ( SELECT sum( actual_putaway_number ) AS actual_putaway_number, waybill_number, sku, putaway_time FROM t_quality_box_putaway GROUP BY waybill_number, sku) d
+        ON a.sku = d.sku AND a.waybill_id = d.waybill_number) ta
+        where (ta.quality_control_finish_number <![CDATA[ <> ]]> 0 or ta.actual_putaway_number <![CDATA[ <> ]]> 0)
+
+            <if test="sku != null and sku != ''">
+                AND ta.sku = #{sku}
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                AND  ta.source_id = #{sourceId}
+            </if>
+           <!-- <if test="warehouseCode != null and warehouseCode != ''">
+                AND  ta.warehouse = #{warehouseCode}
+            </if>-->
+           <if test="warehouseCodeArray != null">
+              and ta.warehouse in
+              <foreach collection="warehouseCodeArray" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+              </foreach>
+            </if>
+            <if test="shipper != null and shipper != ''">
+                AND  ta.goodsOwner = #{shipper}
+            </if>
+            <if test=" customer!= null and customer != ''">
+                AND  ta.customer = #{customer}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND  ta.sku_create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND ta.sku_update_time &lt; #{endTime}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND  ta.source_type =  #{sourceType}
+            </if>
+          <!--  <if test="supplierName != null">
+                and b.customer_name IN
+                <foreach close=")" collection="supplierName" item="item" open="(" separator=",">
+                    #{item}
+                </foreach>
+            </if>-->
+    </select>
+
+    <select id="getStandingBookCount" parameterType="com.brandslink.cloud.inbound.dto.InboundStandingBookReqDto" resultMap="standingBookMap">
+        SELECT  IFNULL(sum(quality_control_finish_number),0) qc_total_num, IFNULL(sum(actual_putaway_number),0) putaway_total_num
+        FROM receive_good_details a
+        LEFT JOIN receive_arrival_notice b ON a.source_id = b.source_id
+        LEFT JOIN (SELECT SUM(quality_control_finish_number) quality_control_finish_number, waybill_number, sku, sku_create_time, sku_update_time  FROM t_quality_control_details WHERE quality_control_finish_number != 0 GROUP BY waybill_number, sku) c ON a.sku = c.sku AND a.waybill_id = c.waybill_number
+        LEFT JOIN (SELECT sum( actual_putaway_number ) AS actual_putaway_number, waybill_number, sku, putaway_time FROM t_quality_box_putaway GROUP BY waybill_number, sku) d
+        ON a.sku = d.sku AND a.waybill_id = d.waybill_number
+        <where>
+            <if test="sku != null and sku != ''">
+                a.sku = #{sku}
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                AND  a.source_id = #{sourceId}
+            </if>
+           <!-- <if test="warehouseCode != null and warehouseCode != ''">
+                AND  b.warehouse = #{warehouseCode}
+            </if>-->
+            <if test="warehouseCodeArray != null">
+                and  b.warehouse in
+                <foreach collection="warehouseCodeArray" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="shipper != null and shipper != ''">
+                AND  b.shipper = #{shipper}
+            </if>
+            <if test=" customer!= null and customer != ''">
+                AND  b.customer = #{customer}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND  c.sku_create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND   c.sku_create_time &lt; #{endTime}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND  b.source_type =  #{sourceType}
+            </if>
+
+            <!--  <if test="supplierName != null">
+                  and b.customer_name IN
+                  <foreach close=")" collection="supplierName" item="item" open="(" separator=",">
+                      #{item}
+                  </foreach>
+              </if>-->
+        </where>
+    </select>
+
+    <!--根据运单号查询版本号-->
+    <select id="selectVersionByWaybillId" resultType="java.lang.Integer">
+            SELECT version FROM t_quality_control_list
+            WHERE waybill_number = #{waybillNumber}
+    </select>
+</mapper>

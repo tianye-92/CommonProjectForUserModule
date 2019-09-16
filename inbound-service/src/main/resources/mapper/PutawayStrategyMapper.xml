@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.PutawayStrategyMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.PutawayStrategy">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="strategy_name" jdbcType="VARCHAR" property="strategyName" />
+        <result column="strategy_rule" jdbcType="VARCHAR" property="strategyRule" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="shipper" jdbcType="VARCHAR" property="shipper" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="creater_id" jdbcType="VARCHAR" property="createrId" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, strategy_name, strategy_rule, warehouse, shipper, status, comment, creater, creater_id
+    </sql>
+    
+    
+    <select id="findAll" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from putaway_strategy
+        <where>
+        	<if test="strategyName != null and strategyName != '' ">
+                and strategy_name like "%"#{strategyName,jdbcType=VARCHAR}"%"
+            </if>
+        	<if test="warehouse != null and warehouse != '' ">
+                and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCodes != null ">
+                and warehouse in
+                <foreach collection="warehouseCodes" index="index" item="warehouseCode" open="(" separator="," close=")">
+                    #{warehouseCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from putaway_strategy
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from putaway_strategy
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy">
+        insert into putaway_strategy (id, strategy_name, strategy_rule, 
+            warehouse, shipper, status, 
+            comment, creater, creater_id
+            )
+        values (#{id,jdbcType=INTEGER}, #{strategyName,jdbcType=VARCHAR}, #{strategyRule,jdbcType=VARCHAR}, 
+            #{warehouse,jdbcType=VARCHAR}, #{shipper,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+            #{comment,jdbcType=VARCHAR}, #{creater,jdbcType=VARCHAR}, #{createrId,jdbcType=VARCHAR}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy">
+        insert into putaway_strategy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="strategyName != null">
+                strategy_name,
+            </if>
+            <if test="strategyRule != null">
+                strategy_rule,
+            </if>
+            <if test="warehouse != null">
+                warehouse,
+            </if>
+            <if test="shipper != null">
+                shipper,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="comment != null">
+                comment,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createrId != null">
+                creater_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="strategyName != null">
+                #{strategyName,jdbcType=VARCHAR},
+            </if>
+            <if test="strategyRule != null">
+                #{strategyRule,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="shipper != null">
+                #{shipper,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                #{createrId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy">
+        update putaway_strategy
+        <set>
+            <if test="strategyName != null">
+                strategy_name = #{strategyName,jdbcType=VARCHAR},
+            </if>
+            <if test="strategyRule != null">
+                strategy_rule = #{strategyRule,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                warehouse = #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="shipper != null">
+                shipper = #{shipper,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                creater_id = #{createrId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy">
+        update putaway_strategy
+        set strategy_name = #{strategyName,jdbcType=VARCHAR},
+            strategy_rule = #{strategyRule,jdbcType=VARCHAR},
+            warehouse = #{warehouse,jdbcType=VARCHAR},
+            shipper = #{shipper,jdbcType=VARCHAR},
+            status = #{status,jdbcType=VARCHAR},
+            comment = #{comment,jdbcType=VARCHAR},
+            creater = #{creater,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.PutawayStrategy" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from putaway_strategy
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="strategyName != null and strategyName != ''">
+                 and strategy_name = #{strategyName,jdbcType=VARCHAR}
+            </if>
+            <if test="strategyRule != null and strategyRule != ''">
+                 and strategy_rule = #{strategyRule,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouse != null and warehouse != ''">
+                 and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="shipper != null and shipper != ''">
+                 and shipper = #{shipper,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != ''">
+                 and status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="comment != null and comment != ''">
+                 and comment = #{comment,jdbcType=VARCHAR}
+            </if>
+            <if test="creater != null and creater != ''">
+                 and creater = #{creater,jdbcType=VARCHAR}
+            </if>
+            <if test="createrId != null and createrId != ''">
+                 and creater_id = #{createrId,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据仓库id获取策略信息-->
+    <select id="selectByWareHouse" resultMap="BaseResultMap">
+            SELECT * FROM putaway_strategy where warehouse = #{warehouseId} and status = #{strategyStatus} and strategy_rule != '1'
+    </select>
+</mapper>

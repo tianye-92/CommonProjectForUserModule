@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.PutawayListMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.PutawayList">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="putaway_id" jdbcType="VARCHAR" property="putawayId" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="seal_box_serial_number" jdbcType="VARCHAR" property="boxId"/>
+        <result column="putaway_status" jdbcType="INTEGER" property="putawayStatus" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceOrderNumber" />
+        <result column="source_type" jdbcType="INTEGER" property="sourceType" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="creater_id" jdbcType="BIGINT" property="createrId" />
+        <result column="creater_by" jdbcType="VARCHAR" property="createrBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="finished_time" jdbcType="TIMESTAMP" property="finishedTime" />
+        <result column="is_exception" jdbcType="TINYINT" property="isException" />
+    </resultMap>
+    
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.brandslink.cloud.inbound.entity.PutawayList">
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, warehouse_code, putaway_id, customer_name, putaway_status, source_order_number,
+        source_type, waybill_number, creater_id, creater_by, create_time, finished_time, 
+        is_exception
+    </sql>
+    
+    <sql id="Blob_Column_List">
+        remark
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_putaway_list
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    
+    <update id="updateFinishTime"  parameterType="com.brandslink.cloud.inbound.entity.PutawayList" >
+        update  t_putaway_list  set finished_time = #{finishedTime,jdbcType=TIMESTAMP}
+        where putaway_id = #{putawayId,jdbcType=VARCHAR} and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </update>
+    
+    
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_putaway_list
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.PutawayList">
+        insert into t_putaway_list (sid, warehouse_code, putaway_id,
+            customer_name, putaway_status,
+            source_order_number, source_type, waybill_number, 
+            creater_id, creater_by, create_time, 
+            finished_time, is_exception, remark
+            )
+        values (#{sid,jdbcType=BIGINT}, #{warehouseCode,jdbcType=VARCHAR}, #{putawayId,jdbcType=VARCHAR}, 
+            #{customerName,jdbcType=VARCHAR}, #{putawayStatus,jdbcType=INTEGER},
+            #{sourceOrderNumber,jdbcType=VARCHAR}, #{sourceType,jdbcType=INTEGER}, #{waybillNumber,jdbcType=VARCHAR},
+            #{createrId,jdbcType=BIGINT}, #{createrBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{finishedTime,jdbcType=TIMESTAMP}, #{isException,jdbcType=TINYINT}, #{remark,jdbcType=LONGVARCHAR}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayList">
+        insert into t_putaway_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code,
+            </if>
+            <if test="putawayId != null">
+                putaway_id,
+            </if>
+            <if test="customerName != null">
+                customerName,
+            </if>
+            <if test="putawayStatus != null">
+                putaway_status,
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number,
+            </if>
+            <if test="sourceType != null">
+                source_type,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="createrId != null">
+                creater_id,
+            </if>
+            <if test="createrBy != null">
+                creater_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="finishedTime != null">
+                finished_time,
+            </if>
+            <if test="isException != null">
+                is_exception,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="warehouseCode != null">
+                #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayId != null">
+                #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayStatus != null">
+                #{putawayStatus,jdbcType=INTEGER},
+            </if>
+            <if test="sourceOrderNumber != null">
+                #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                #{sourceType,jdbcType=INTEGER},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="createrBy != null">
+                #{createrBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishedTime != null">
+                #{finishedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isException != null">
+                #{isException,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayList">
+        update t_putaway_list
+        <set>
+            <if test="customerName != null">
+                customerName = #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayStatus != null">
+                putaway_status = #{putawayStatus,jdbcType=INTEGER},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                source_type = #{sourceType,jdbcType=INTEGER},
+            </if>
+            <if test="finishedTime != null">
+                finished_time = #{finishedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isException != null">
+                is_exception = #{isException,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <where>
+        	<if test="sid != null ">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="putawayId != null and putawayId != '' ">
+                 and putaway_id = #{putawayId,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode != null">
+                 and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+    
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.brandslink.cloud.inbound.entity.PutawayList">
+        update t_putaway_list
+        set warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            putaway_id = #{putawayId,jdbcType=VARCHAR},
+            customer_name = #{customerName,jdbcType=VARCHAR},
+            putaway_status = #{putawayStatus,jdbcType=INTEGER},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            source_type = #{sourceType,jdbcType=INTEGER},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=BIGINT},
+            creater_by = #{createrBy,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            finished_time = #{finishedTime,jdbcType=TIMESTAMP},
+            is_exception = #{isException,jdbcType=TINYINT},
+            remark = #{remark,jdbcType=LONGVARCHAR}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayList">
+        update t_putaway_list
+        set warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            putaway_id = #{putawayId,jdbcType=VARCHAR},
+            customer_name = #{customerName,jdbcType=VARCHAR},
+            putaway_status = #{putawayStatus,jdbcType=INTEGER},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            source_type = #{sourceType,jdbcType=INTEGER},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=BIGINT},
+            creater_by = #{createrBy,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            finished_time = #{finishedTime,jdbcType=TIMESTAMP},
+            is_exception = #{isException,jdbcType=TINYINT}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.PutawayList" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_putaway_list
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                 and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+            <if test="putawayId != null and putawayId != ''">
+                 and putaway_id = #{putawayId,jdbcType=VARCHAR}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                 and customer_name = #{customerName,jdbcType=VARCHAR}
+            </if>
+            <if test="putawayStatus != null and putawayStatus != ''">
+                 and putaway_status = #{putawayStatus,jdbcType=INTEGER}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                 and source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                 and source_type = #{sourceType,jdbcType=INTEGER}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="createrId != null and createrId != ''">
+                 and creater_id = #{createrId,jdbcType=BIGINT}
+            </if>
+            <if test="createrBy != null and createrBy != ''">
+                 and creater_by = #{createrBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="finishedTime != null and finishedTime != ''">
+                 and finished_time = #{finishedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="isException != null and isException != ''">
+                 and is_exception = #{isException,jdbcType=TINYINT}
+            </if>
+            <if test="remark != null and remark != ''">
+                 and remark = #{remark,jdbcType=LONGVARCHAR}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 查询上架单（分页） -->
+    <select id="selectByPutawayObj" parameterType="com.brandslink.cloud.inbound.dto.PutawayListReqDto" resultMap="BaseResultMap">
+        SELECT a.*, b.seal_box_serial_number FROM t_putaway_list a
+        LEFT JOIN t_quality_box_putaway b ON a.putaway_id = b.putaway_id
+        <where>
+            a.warehouse_code IN
+            <foreach collection="warehouseCode" item="warehouse" index="index" open="(" close=")" separator=",">
+               #{warehouse}
+            </foreach>
+            <if test="customerName != null and customerName != ''">
+                and a.customer_name = #{customerName}
+            </if>
+            <if test="putawayId != null and putawayId != ''">
+                and a.putaway_id = #{putawayId}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                and a.source_order_number = #{sourceOrderNumber}
+            </if>
+            <if test="putawayStatus != null and putawayStatus != ''">
+                and a.putaway_status = #{putawayStatus}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                and a.source_type = #{sourceType}
+            </if>
+            <if test="createTimeStart != null and createTimeStart != ''">
+                and a.create_time &gt;= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd != null and createTimeEnd != ''">
+                and a.create_time &lt;= #{createTimeEnd}
+            </if>
+            <if test="finishedTimeStart != null and finishedTimeStart != ''">
+                and a.finished_time &gt;= #{finishedTimeStart}
+            </if>
+            <if test="finishedTimeEnd != null and finishedTimeEnd != ''">
+                and a.finished_time &lt;= #{finishedTimeEnd}
+            </if>
+        </where>
+        GROUP BY a.putaway_id
+        <choose>
+            <when test="order == 'asc' and orderField == 'createTime'">
+                ORDER BY a.create_time ASC
+            </when>
+            <when test="order == 'desc' and orderField == 'createTime'">
+                ORDER BY a.create_time DESC
+            </when>
+            <when test="order == 'asc' and orderField == 'finishTime'">
+                ORDER BY a.finish_time ASC
+            </when>
+            <when test="order == 'desc' and orderField == 'finishTime'">
+                ORDER BY a.finish_time DESC
+            </when>
+            <otherwise>
+                ORDER BY a.create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--查询最后一条上架单号-->
+    <select id="selectLastData" resultType="java.lang.String">
+            SELECT putaway_id FROM t_putaway_list ORDER BY sid DESC LIMIT 1;
+    </select>
+    
+    <!--查询来源单下的上架单上架状态-->
+    <select id="selectPutawayStatus" resultType="java.lang.Integer">
+            SELECT putaway_status FROM t_putaway_list where source_order_number = #{sourceOrderNumber}
+    </select>
+</mapper>

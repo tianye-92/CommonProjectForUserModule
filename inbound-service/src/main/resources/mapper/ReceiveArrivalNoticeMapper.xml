@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.ReceiveArrivalNoticeMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="arrival_notice_id" jdbcType="VARCHAR" property="arrivalNoticeId" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="shipper" jdbcType="VARCHAR" property="shipper" />
+        <result column="customer" jdbcType="VARCHAR" property="customer" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+        <result column="quality_type" jdbcType="VARCHAR" property="qualityType" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="planned_quantity" jdbcType="INTEGER" property="plannedQuantity" />
+        <result column="delivery_quantity" jdbcType="INTEGER" property="deliveryQuantity" />
+        <result column="parcel_quantity" jdbcType="INTEGER" property="parcelQuantity" />
+        <result column="differ_quantity" jdbcType="INTEGER" property="differQuantity" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="creater_id" jdbcType="BIGINT" property="createrId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="planned_time" jdbcType="TIMESTAMP" property="plannedTime" />
+        <result column="arrival_time" jdbcType="TIMESTAMP" property="arrivalTime" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <result column="is_unload" jdbcType="TINYINT" property="isUnload" />
+        <result column="last_update_by" jdbcType="VARCHAR" property="lastUpdateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="affirm_by" jdbcType="VARCHAR" property="affirmBy" />
+        <result column="affirm_time" jdbcType="TIMESTAMP" property="affirmTime" />
+        <result column="affirm_status" jdbcType="TINYINT" property="affirmStatus" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, arrival_notice_id, source_id, shipper, customer, customer_name, source_type, 
+        quality_type, warehouse, status, planned_quantity, delivery_quantity, parcel_quantity, 
+        differ_quantity, creater, creater_id, create_time, planned_time, arrival_time, comment, 
+        is_unload, last_update_by, update_time, affirm_by, affirm_time, affirm_status
+    </sql>
+    
+    <!-- 到货通知单信息查询 -->
+    <select id="findAll" parameterType="com.brandslink.cloud.inbound.dto.ReceiveArrivalNoticeInfo" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" />  from receive_arrival_notice
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id like "%"#{sourceId,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="sourceType != null and sourceType != '' ">
+                and source_type = #{sourceType,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouse != null and warehouse != '' ">
+                and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != '' ">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+        	<if test="creater != null and creater != '' ">
+                and creater like "%"#{creater,jdbcType=VARCHAR}"%"
+            </if>
+        	<if test="dateType == 1 ">
+	        	<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ create_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ create_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        	<if test="dateType == 2 ">
+        		<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ planned_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ planned_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        	<if test="dateType == 3 ">
+        		<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ arrival_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ arrival_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        	<if test="warehouseCodes != null ">
+                and warehouse in
+                <foreach collection="warehouseCodes" index="index" item="warehouseCode" open="(" separator="," close=")">
+                   #{warehouseCode}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+	        <when test="orderStatus == 'desc' and orderDateType == 1 ">
+	            order by create_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 1 ">
+	            order by create_time 
+	        </when>
+	        <when test="orderStatus == 'desc' and orderDateType == 2 ">
+	            order by planned_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 2 ">
+	            order by planned_time 
+	        </when>
+	        <when test="orderStatus == 'desc' and orderDateType == 3 ">
+	            order by arrival_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 3 ">
+	            order by arrival_time 
+	        </when>
+	        <otherwise>
+	        	order by create_time desc
+	        </otherwise>
+        </choose>
+    </select>
+    
+    
+    
+    
+    
+    
+    <!-- 客户端到货通知单信息查询 -->
+    <select id="findAllClient" parameterType="com.brandslink.cloud.inbound.dto.ReceiveArrivalNoticeInfo" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List" />  from receive_arrival_notice
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id like "%"#{sourceId,jdbcType=VARCHAR}"%"
+            </if>
+            <if test="warehouse != null and warehouse != '' ">
+                and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="affirmStatus != null ">
+                and affirm_status = #{affirmStatus,jdbcType=TINYINT}
+            </if>
+            <if test="sourceType != null and sourceType != '' ">
+                and source_type = #{sourceType,jdbcType=VARCHAR}
+            </if>
+            <if test="customer != null and customer != '' ">
+                and customer = #{customer,jdbcType=VARCHAR}
+            </if>
+        	<if test="dateType == 1 ">
+	        	<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ create_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ create_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        	<if test="dateType == 4 ">
+        		<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ update_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ update_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        	<if test="dateType == 5 ">
+        		<if test="beginTime != null and beginTime != '' ">
+                    and <![CDATA[ affirm_time >= #{beginTime}  ]]>
+                </if>
+                <if test="afterTime != null and afterTime != '' ">
+                    and <![CDATA[ affirm_time <= #{afterTime}  ]]>
+                </if>
+        	</if>
+        </where>
+        <choose>
+	        <when test="orderStatus == 'desc' and orderDateType == 1 ">
+	            order by create_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 1 ">
+	            order by create_time 
+	        </when>
+	        <when test="orderStatus == 'desc' and orderDateType == 2 ">
+	            order by planned_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 2 ">
+	            order by planned_time 
+	        </when>
+	        <when test="orderStatus == 'desc' and orderDateType == 4 ">
+	            order by update_time desc
+	        </when>
+	        <when test="orderStatus == 'asc' and orderDateType == 4 ">
+	            order by update_time 
+	        </when>
+	        <otherwise>
+	        	order by create_time desc
+	        </otherwise>
+        </choose>
+    </select>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+        update receive_arrival_notice
+        <set>
+            <if test="status != null and status != '' ">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comment != null and comment != '' ">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="lastUpdateBy != null">
+                last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmBy != null">
+                affirm_by = #{affirmBy,jdbcType=VARCHAR},
+            </if>
+            <if test="affirmTime != null">
+                affirm_time = #{affirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmStatus != null">
+                affirm_status = #{affirmStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+        	<if test="id != null ">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+    
+    
+    <!-- 查询当天时间内的流水号 -->
+    <select id="selectArrivalNoticeIdByDate"  parameterType="java.lang.String"  resultType="java.lang.String">
+        select arrival_notice_id from receive_arrival_notice
+        where arrival_notice_id like "%"#{dateString,jdbcType=VARCHAR}"%"
+    </select>
+    
+    <!-- 查询当天时间内的来源单号流水号 -->
+    <select id="selectSourceIdByDate"  parameterType="java.lang.String"  resultType="java.lang.String">
+        select source_id from receive_arrival_notice
+        where source_id like "%"#{dateString,jdbcType=VARCHAR}"%"
+    </select>
+    
+    <select id="selectSupplier" parameterType="java.lang.String" resultType="java.lang.String">
+        select customer_name
+        from receive_arrival_notice
+        where source_id = #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    <!-- 查询来源单号是否已存在 -->
+    <select id="selectAmountBySourceId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from receive_arrival_notice
+        where source_id = #{sourceId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    
+    <!--根据来源单查询到货通知单-->
+    <select id="selectArrivalNoticeBySourceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+            SELECT * FROM receive_arrival_notice WHERE source_id = #{sourceOrderNumber}
+    </select>
+
+    <!--根据运单号查询到货通知单-->
+    <select id="selectArrivalNoticeByWaybill" resultMap="BaseResultMap">
+            SELECT a.* FROM receive_arrival_notice a
+            LEFT JOIN receive_good_details b
+            ON a.source_id = b.source_id
+            WHERE b.waybill_id = #{waybillNumber} limit 1
+    </select>
+    
+    <!--根据运单号模糊查询到货通知单-->
+    <select id="selectArrivalNoticeByWaybillDim"  parameterType="com.brandslink.cloud.inbound.dto.ReceiveArrivalNoticeInfo"  resultMap="BaseResultMap">
+            SELECT distinct a.* FROM receive_arrival_notice a
+            LEFT JOIN receive_good_details b
+            ON a.source_id = b.source_id
+           	<where>
+           	b.waybill_id like  "%"#{wayBillId}"%"
+           	<if test="warehouseCodes != null ">
+                and warehouse in
+                <foreach collection="warehouseCodes" index="index" item="warehouseCode" open="(" separator="," close=")">
+                   #{warehouseCode}
+                </foreach>
+            </if>
+           	</where>
+    </select>
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_arrival_notice
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteOrders" parameterType="java.util.List">
+        delete from receive_arrival_notice
+        where id in
+        <foreach collection="list" index="list" item="id" open="(" separator="," close=")">
+               #{id}
+        </foreach>
+    </delete>
+    
+    
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+        insert into receive_arrival_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="arrivalNoticeId != null">
+                arrival_notice_id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="shipper != null">
+                shipper,
+            </if>
+            <if test="customer != null">
+                customer,
+            </if>
+            <if test="customerName != null">
+                customer_name,
+            </if>
+            <if test="sourceType != null">
+                source_type,
+            </if>
+            <if test="qualityType != null">
+                quality_type,
+            </if>
+            <if test="warehouse != null">
+                warehouse,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity,
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity,
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity,
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createrId != null">
+                creater_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="plannedTime != null">
+                planned_time,
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time,
+            </if>
+            <if test="comment != null">
+                comment,
+            </if>
+            <if test="isUnload != null">
+                is_unload,
+            </if>
+            <if test="lastUpdateBy != null">
+                last_update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="affirmBy != null">
+                affirm_by,
+            </if>
+            <if test="affirmTime != null">
+                affirm_time,
+            </if>
+            <if test="affirmStatus != null">
+                affirm_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="arrivalNoticeId != null">
+                #{arrivalNoticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="shipper != null">
+                #{shipper,jdbcType=VARCHAR},
+            </if>
+            <if test="customer != null">
+                #{customer,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                #{sourceType,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityType != null">
+                #{qualityType,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="parcelQuantity != null">
+                #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="plannedTime != null">
+                #{plannedTime},
+            </if>
+            <if test="arrivalTime != null">
+                #{arrivalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comment != null">
+                #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="isUnload != null">
+                #{isUnload,jdbcType=TINYINT},
+            </if>
+            <if test="lastUpdateBy != null">
+                #{lastUpdateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmBy != null">
+                #{affirmBy,jdbcType=VARCHAR},
+            </if>
+            <if test="affirmTime != null">
+                #{affirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmStatus != null">
+                #{affirmStatus,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+        update receive_arrival_notice
+        <set>
+            <if test="qualityType != null">
+                quality_type = #{qualityType,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                warehouse = #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedQuantity != null">
+                planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="deliveryQuantity != null">
+                delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="differQuantity != null">
+                differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                creater_id = #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="plannedTime != null">
+                planned_time = #{plannedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="isUnload != null">
+                is_unload = #{isUnload,jdbcType=TINYINT},
+            </if>
+            <if test="lastUpdateBy != null">
+                last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmBy != null">
+                affirm_by = #{affirmBy,jdbcType=VARCHAR},
+            </if>
+            <if test="affirmTime != null">
+                affirm_time = #{affirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="affirmStatus != null">
+                affirm_status = #{affirmStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        <where>
+        	<if test="sourceId != null and sourceId != '' ">
+                and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+        	<if test="id != null ">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.ReceiveArrivalNotice">
+        update receive_arrival_notice
+        set arrival_notice_id = #{arrivalNoticeId,jdbcType=VARCHAR},
+            source_id = #{sourceId,jdbcType=VARCHAR},
+            shipper = #{shipper,jdbcType=VARCHAR},
+            customer = #{customer,jdbcType=VARCHAR},
+            customer_name = #{customerName,jdbcType=VARCHAR},
+            source_type = #{sourceType,jdbcType=VARCHAR},
+            quality_type = #{qualityType,jdbcType=VARCHAR},
+            warehouse = #{warehouse,jdbcType=VARCHAR},
+            status = #{status,jdbcType=VARCHAR},
+            planned_quantity = #{plannedQuantity,jdbcType=INTEGER},
+            delivery_quantity = #{deliveryQuantity,jdbcType=INTEGER},
+            parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            differ_quantity = #{differQuantity,jdbcType=INTEGER},
+            creater = #{creater,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            planned_time = #{plannedTime,jdbcType=TIMESTAMP},
+            arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+            comment = #{comment,jdbcType=VARCHAR},
+            is_unload = #{isUnload,jdbcType=TINYINT},
+            last_update_by = #{lastUpdateBy,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            affirm_by = #{affirmBy,jdbcType=VARCHAR},
+            affirm_time = #{affirmTime,jdbcType=TIMESTAMP},
+            affirm_status = #{affirmStatus,jdbcType=TINYINT}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    
+</mapper>

@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityControlDetailsMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
+        <result column="quality_control_order_number" jdbcType="VARCHAR" property="qualityControlOrderNumber" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceOrderNumber" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="good_product_number" jdbcType="INTEGER" property="goodProductNumber" />
+        <result column="unusable_product_number" jdbcType="INTEGER" property="unusableProductNumber" />
+        <result column="quality_control_finish_number" jdbcType="INTEGER" property="qualityControlFinishNumber" />
+        <result column="seal_box_finish_number" jdbcType="INTEGER" property="sealBoxFinishNumber" />
+        <result column="seal_box_unfinish_number" jdbcType="INTEGER" property="sealBoxUnfinishNumber" />
+        <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
+        <result column="sku_create_time" jdbcType="TIMESTAMP" property="skuCreateTime" />
+        <result column="sku_update_time" jdbcType="TIMESTAMP" property="skuUpdateTime" />
+        <result column="is_exception_case" jdbcType="TINYINT" property="isExceptionCase" />
+        <result column="sku_floor" jdbcType="VARCHAR" property="skuFloor" />
+        <result column="reserved" jdbcType="VARCHAR" property="reserved" />
+    </resultMap>
+    
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+        <result column="version" jdbcType="INTEGER" property="version" />
+    </resultMap>
+
+    <!--到货质检详情结果集-->
+    <resultMap id="QcResultMap" type="com.brandslink.cloud.inbound.dto.QcWaybillInfoDto">
+        <id column="sid" jdbcType="INTEGER" property="id" />
+        <result column="quality_control_order_number" jdbcType="VARCHAR" property="qualityControlOrderNumber" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceId" />
+        <result column="source_type" jdbcType="INTEGER" property="sourceType" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="quality_type" jdbcType="VARCHAR" property="qcType" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillId" />
+        <result column="sku" jdbcType="VARCHAR" property="SKU" />
+        <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodsName" />
+        <result column="differ_quantity" jdbcType="INTEGER" property="differQuantity" />
+        <result column="sku_floor" jdbcType="VARCHAR" property="skuFloor" />
+        <result column="quality_control_finish_number" jdbcType="INTEGER" property="qualityControlFinishNumber" />
+        <result column="planned_quantity" jdbcType="INTEGER" property="plannedQuantity" />
+        <result column="seal_box_finish_number" jdbcType="INTEGER" property="sealBoxFinishNumber" />
+        <result column="seal_box_unfinish_number" jdbcType="VARCHAR" property="sealBoxUnfinishNumber" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="version" jdbcType="INTEGER" property="version" />
+    </resultMap>
+
+    <!--质检单信息-->
+    <resultMap id="QcResponseInfo" type="com.brandslink.cloud.inbound.dto.QcListResponseDto">
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="seal_box_serial_number" jdbcType="VARCHAR" property="sealBoxSerialNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="qc_number" jdbcType="VARCHAR" property="qualityControlFinishNumber" />
+        <result column="create_name" jdbcType="VARCHAR" property="createBy" />
+        <result column="sku_create_time" jdbcType="VARCHAR" property="skuUpdateTime" />
+        <result column="qc_station_id" jdbcType="VARCHAR" property="qcStationId" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        sid, picture_url, quality_control_order_number, source_order_number,
+        waybill_number, sku, good_product_number, unusable_product_number, quality_control_finish_number, 
+        seal_box_finish_number, seal_box_unfinish_number, sku_status, sku_create_time, sku_update_time, 
+        is_exception_case, sku_floor, reserved
+    </sql>
+    
+    <sql id="Blob_Column_List">
+        remark, version
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_quality_control_details
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_control_details
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        insert into t_quality_control_details (sid, picture_url,
+            quality_control_order_number,
+            source_order_number, waybill_number, sku, 
+            good_product_number, unusable_product_number, 
+            quality_control_finish_number, seal_box_finish_number, 
+            seal_box_unfinish_number, sku_status, sku_create_time, 
+            sku_update_time, is_exception_case, sku_floor,
+            reserved, remark, version)
+        values (#{sid,jdbcType=BIGINT}, #{pictureUrl,jdbcType=VARCHAR},
+            #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            #{sourceOrderNumber,jdbcType=VARCHAR}, #{waybillNumber,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR},
+            #{goodProductNumber,jdbcType=INTEGER}, #{unusableProductNumber,jdbcType=INTEGER}, 
+            #{qualityControlFinishNumber,jdbcType=INTEGER}, #{sealBoxFinishNumber,jdbcType=INTEGER}, 
+            #{sealBoxUnfinishNumber,jdbcType=INTEGER}, #{skuStatus,jdbcType=TINYINT}, #{skuCreateTime,jdbcType=TIMESTAMP}, 
+            #{skuUpdateTime,jdbcType=TIMESTAMP}, #{isExceptionCase,jdbcType=TINYINT}, #{skuFloor,jdbcType=VARCHAR},
+            #{reserved,jdbcType=VARCHAR}, #{remark,jdbcType=LONGVARCHAR}, #{version, jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        insert into t_quality_control_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="pictureUrl != null">
+                picture_url,
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number,
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="goodProductNumber != null">
+                good_product_number,
+            </if>
+            <if test="unusableProductNumber != null">
+                unusable_product_number,
+            </if>
+            <if test="qualityControlFinishNumber != null">
+                quality_control_finish_number,
+            </if>
+            <if test="sealBoxFinishNumber != null">
+                seal_box_finish_number,
+            </if>
+            <if test="sealBoxUnfinishNumber != null">
+                seal_box_unfinish_number,
+            </if>
+            <if test="skuStatus != null">
+                sku_status,
+            </if>
+            <if test="skuCreateTime != null">
+                sku_create_time,
+            </if>
+            <if test="skuUpdateTime != null">
+                sku_update_time,
+            </if>
+            <if test="isExceptionCase != null">
+                is_exception_case,
+            </if>
+            <if test="skuFloor != null">
+                sku_floor,
+            </if>
+            <if test="reserved != null">
+                reserved,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="version != null">
+                version
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="pictureUrl != null">
+                #{pictureUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodProductNumber != null">
+                #{goodProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="unusableProductNumber != null">
+                #{unusableProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="qualityControlFinishNumber != null">
+                #{qualityControlFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxFinishNumber != null">
+                #{sealBoxFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxUnfinishNumber != null">
+                #{sealBoxUnfinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuStatus != null">
+                #{skuStatus,jdbcType=TINYINT},
+            </if>
+            <if test="skuCreateTime != null">
+                #{skuCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="skuUpdateTime != null">
+                #{skuUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isExceptionCase != null">
+                #{isExceptionCase,jdbcType=TINYINT},
+            </if>
+            <if test="skuFloor != null">
+                #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        update t_quality_control_details
+        <set>
+            <if test="pictureUrl != null">
+                picture_url = #{pictureUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodProductNumber != null">
+                good_product_number = #{goodProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="unusableProductNumber != null">
+                unusable_product_number = #{unusableProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="qualityControlFinishNumber != null">
+                quality_control_finish_number = #{qualityControlFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxFinishNumber != null">
+                seal_box_finish_number = #{sealBoxFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxUnfinishNumber != null">
+                seal_box_unfinish_number = #{sealBoxUnfinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuStatus != null">
+                sku_status = #{skuStatus,jdbcType=TINYINT},
+            </if>
+            <if test="skuCreateTime != null">
+                sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="skuUpdateTime != null">
+                sku_update_time = #{skuUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isExceptionCase != null">
+                is_exception_case = #{isExceptionCase,jdbcType=TINYINT},
+            </if>
+            <if test="skuFloor != null">
+                sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                reserved = #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1,
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        update t_quality_control_details
+        set picture_url = #{pictureUrl,jdbcType=VARCHAR},
+            quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            good_product_number = #{goodProductNumber,jdbcType=INTEGER},
+            unusable_product_number = #{unusableProductNumber,jdbcType=INTEGER},
+            quality_control_finish_number = #{qualityControlFinishNumber,jdbcType=INTEGER},
+            seal_box_finish_number = #{sealBoxFinishNumber,jdbcType=INTEGER},
+            seal_box_unfinish_number = #{sealBoxUnfinishNumber,jdbcType=INTEGER},
+            sku_status = #{skuStatus,jdbcType=TINYINT},
+            sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            sku_update_time = #{skuUpdateTime,jdbcType=TIMESTAMP},
+            is_exception_case = #{isExceptionCase,jdbcType=TINYINT},
+            sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            reserved = #{reserved,jdbcType=VARCHAR},
+            remark = #{remark,jdbcType=LONGVARCHAR},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} and  version = #{version,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        update t_quality_control_details
+        set picture_url = #{pictureUrl,jdbcType=VARCHAR},
+            quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            good_product_number = #{goodProductNumber,jdbcType=INTEGER},
+            unusable_product_number = #{unusableProductNumber,jdbcType=INTEGER},
+            quality_control_finish_number = #{qualityControlFinishNumber,jdbcType=INTEGER},
+            seal_box_finish_number = #{sealBoxFinishNumber,jdbcType=INTEGER},
+            seal_box_unfinish_number = #{sealBoxUnfinishNumber,jdbcType=INTEGER},
+            sku_status = #{skuStatus,jdbcType=TINYINT},
+            sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            sku_update_time = #{skuUpdateTime,jdbcType=TIMESTAMP},
+            is_exception_case = #{isExceptionCase,jdbcType=TINYINT},
+            sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            reserved = #{reserved,jdbcType=VARCHAR},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} AND  version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails" resultMap="ResultMapWithBLOBs">
+        select 
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from t_quality_control_details
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="pictureUrl != null and pictureUrl != ''">
+                 and picture_url = #{pictureUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="qualityControlOrderNumber != null and qualityControlOrderNumber != ''">
+                 and quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                 and source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="goodProductNumber != null and goodProductNumber != ''">
+                 and good_product_number = #{goodProductNumber,jdbcType=INTEGER}
+            </if>
+            <if test="unusableProductNumber != null and unusableProductNumber != ''">
+                 and unusable_product_number = #{unusableProductNumber,jdbcType=INTEGER}
+            </if>
+            <if test="qualityControlFinishNumber != null and qualityControlFinishNumber != ''">
+                 and quality_control_finish_number = #{qualityControlFinishNumber,jdbcType=INTEGER}
+            </if>
+            <if test="sealBoxFinishNumber != null and sealBoxFinishNumber != ''">
+                 and seal_box_finish_number = #{sealBoxFinishNumber,jdbcType=INTEGER}
+            </if>
+            <if test="sealBoxUnfinishNumber != null and sealBoxUnfinishNumber != ''">
+                 and seal_box_unfinish_number = #{sealBoxUnfinishNumber,jdbcType=INTEGER}
+            </if>
+            <if test="skuStatus != null and skuStatus != ''">
+                 and sku_status = #{skuStatus,jdbcType=TINYINT}
+            </if>
+            <if test="skuCreateTime != null and skuCreateTime != ''">
+                 and sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="skuUpdateTime != null and skuUpdateTime != ''">
+                 and sku_update_time = #{skuUpdateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="isExceptionCase != null and isExceptionCase != ''">
+                 and is_exception_case = #{isExceptionCase,jdbcType=TINYINT}
+            </if>
+            <if test="skuFloor != null and skuFloor != ''">
+                 and sku_floor = #{skuFloor,jdbcType=VARCHAR}
+            </if>
+            <if test="reserved != null and reserved != ''">
+                 and reserved = #{reserved,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null and remark != ''">
+                 and remark = #{remark,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据来源单号更新质检单详情-->
+    <update id="updateBySourceOrderNum" parameterType="com.brandslink.cloud.inbound.entity.QualityControlDetails">
+        update t_quality_control_details
+        <set>
+            <if test="pictureUrl != null">
+                picture_url = #{pictureUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityControlOrderNumber != null">
+                quality_control_order_number = #{qualityControlOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="goodProductNumber != null">
+                good_product_number = #{goodProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="unusableProductNumber != null">
+                unusable_product_number = #{unusableProductNumber,jdbcType=INTEGER},
+            </if>
+            <if test="qualityControlFinishNumber != null">
+                quality_control_finish_number = #{qualityControlFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxFinishNumber != null">
+                seal_box_finish_number = #{sealBoxFinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="sealBoxUnfinishNumber != null">
+                seal_box_unfinish_number = #{sealBoxUnfinishNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuStatus != null">
+                sku_status = #{skuStatus,jdbcType=TINYINT},
+            </if>
+            <if test="skuCreateTime != null">
+                sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="skuUpdateTime != null">
+                sku_update_time = #{skuUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isExceptionCase != null">
+                is_exception_case = #{isExceptionCase,jdbcType=TINYINT},
+            </if>
+            <if test="skuFloor != null">
+                sku_floor = #{skuFloor,jdbcType=VARCHAR},
+            </if>
+            <if test="reserved != null">
+                reserved = #{reserved,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="version != null and version != ''">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <!--根据卡板号及运单号查询货物信息-->
+    <select id="getWaybillInfoByCardBoardAndWaybillNum" resultMap="QcResultMap">
+            SELECT e.quality_control_order_number, d.sid, d.picture_url, c.customer_name,a.card_board_id,c.warehouse, c.source_id, c.source_type, c.creater, c.quality_type, b.good_name, b.waybill_id, b.sku,b.planned_quantity,d.quality_control_finish_number,
+            d.seal_box_finish_number, d.seal_box_unfinish_number, d.sku_floor, ifnull(d.quality_control_finish_number,0) - b.planned_quantity AS differ_quantity, d.remark
+            FROM receive_card_board_create a
+            LEFT JOIN receive_good_details b ON a.waybill_id = b.waybill_id
+            LEFT JOIN receive_arrival_notice c ON a.source_id = c.source_id
+            LEFT JOIN t_quality_control_details d ON b.sku = d.sku AND b.waybill_id = d.waybill_number
+            LEFT JOIN t_quality_control_list e ON a.waybill_id = e.waybill_number
+            WHERE a.waybill_id = #{waybillNum} AND a.card_board_id = #{cardBoardNum}
+    </select>
+
+    <!--根据卡板号及来源单号查询货物信息-->
+    <select id="getWaybillInfoByCardBoardAndSourceNum" resultMap="QcResultMap">
+           SELECT e.quality_control_order_number, d.sid, d.picture_url, c.customer_name,a.card_board_id,c.warehouse, c.source_id, c.source_type, c.creater, c.quality_type, b.good_name, b.waybill_id, b.sku,b.planned_quantity,d.quality_control_finish_number,
+           d.sku_floor, d.seal_box_finish_number, d.seal_box_unfinish_number, ifnull(d.quality_control_finish_number,0) - b.planned_quantity AS differ_quantity, d.remark
+           FROM receive_card_board_create a
+           LEFT JOIN receive_good_details b ON a.waybill_id = b.waybill_id
+           LEFT JOIN receive_arrival_notice c ON a.source_id = c.source_id
+           LEFT JOIN t_quality_control_details d ON b.sku = d.sku AND b.waybill_id = d.waybill_number
+           LEFT JOIN t_quality_control_list e ON a.waybill_id = e.waybill_number
+           WHERE a.source_id = #{waybillNum} AND a.card_board_id = #{cardBoardNum}
+    </select>
+
+    <!-- 根据运单号及商品sku查询商品详情-->
+    <select id="selectQCWaybillDetails" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from t_quality_control_details
+        <where>
+            waybill_number = #{waybillNumber} AND sku = #{sku} AND quality_control_order_number = #{qualityControlOrderNumber}
+        </where>
+    </select>
+
+    <!--查询已质检完成商品数量-->
+    <select id="selectCountBySourceId" parameterType="java.lang.String" resultType="java.lang.Integer">
+            SELECT SUM(quality_control_finish_number)  FROM t_quality_control_details WHERE t_quality_control_details.source_order_number = #{sourceOrderNumber}
+    </select>
+
+    <!--查询质检详情-->
+    <select id="getQCListDetails" parameterType="java.lang.String" resultMap="QcResponseInfo">
+            SELECT a.waybill_number, d.seal_box_serial_number, a.sku,
+            CASE WHEN c.seal_num > 0 THEN
+                    c.seal_num
+                ELSE
+                    b.qc_number
+            END qc_number, b.create_name, b.sku_create_time,  b.qc_station_id FROM t_quality_control_details a
+            LEFT JOIN t_quality_control_assistants b ON a.waybill_number = b.waybill_number AND a.sku = b.sku
+            LEFT JOIN t_quality_box_assistants c ON b.sid = c.assistants_sid
+            LEFT JOIN t_quality_box_putaway d ON c.box_sid = d.sid
+            WHERE a.quality_control_order_number = #{qualityControlOrderNumber} AND a.quality_control_finish_number > 0
+            ORDER BY a.sku_update_time DESC
+    </select>
+
+    <!--根据采购单号及卡板号查询运单详情-->
+    <select id="selectQCDetailsByCardBoardNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+           SELECT d.sid,c.customer_name,a.card_board_id,c.warehouse, c.source_id, c.source_type, c.creater, c.quality_type, b.good_name, b.waybill_id, b.sku,b.planned_quantity,d.quality_control_finish_number,
+           d.quality_control_finish_number - b.delivery_quantity AS differ_quantity
+           FROM receive_card_board_create a
+           LEFT JOIN receive_good_details b ON a.waybill_id = b.waybill_id
+           LEFT JOIN receive_arrival_notice c ON a.source_id = c.source_id
+           LEFT JOIN t_quality_control_details d ON a.waybill_id = d.waybill_number AND b.sku = d.sku
+           WHERE a.source_id = #{purchaseOrder} AND a.card_board_id = #{cardBoardNum}
+    </select>
+
+    <!--根据运单号查询质检总数-->
+    <select id="selectCountByWaybillId" resultType="java.lang.Integer">
+             SELECT SUM(quality_control_finish_number)  FROM t_quality_control_details WHERE waybill_number = #{waybillNumber}
+    </select>
+    
+    
+    <!--根据运单号和sku查询质检完成数-->
+    <select id="selectDeliveryQuantityByWayBillId" resultType="java.lang.Integer">
+             SELECT SUM(quality_control_finish_number)  FROM t_quality_control_details WHERE waybill_number = #{waybillNumber} and sku = #{sku,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <!--根据来源单号查询质检总数-->
+    <select id="selectCountBySourceOrderNumber" resultType="java.lang.Integer">
+             SELECT SUM(quality_control_finish_number)  FROM t_quality_control_details WHERE source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <!-- 根据来源单号&sku查询质检完成状态 -->
+    <select id="selectOkStatusBySourceOrderNumber" resultType="java.lang.Integer">
+             SELECT sku_status  FROM t_quality_control_details WHERE source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR} and sku = #{sku,jdbcType=VARCHAR}
+    </select>
+
+    <!--根据主键查询运单详情-->
+    <select id="selectDetailByPrimaryKey" resultMap="QcResultMap" parameterType="java.lang.Long">
+            SELECT a.*, b.customer_name, b.source_type FROM t_quality_control_details a
+            LEFT JOIN receive_arrival_notice b ON a.source_order_number = b.source_id
+            WHERE a.sid	 = #{sid}
+    </select>
+
+    <!--根据运单号查询订单详情状态-->
+    <select id="selectStatusByWaybillId" resultType="java.lang.String" parameterType="java.lang.String">
+            SELECT a.sku_status FROM t_quality_control_details a WHERE a.waybill_number = #{waybillNumber}
+    </select>
+
+    <!--查询拆包数-->
+    <select id="selectUnpackByWaybill" resultType="java.lang.Integer" parameterType="java.lang.String">
+            SELECT COUNT(t_quality_control_details.waybill_number) FROM t_quality_control_details
+            WHERE t_quality_control_details.quality_control_finish_number > 0 AND t_quality_control_details.waybill_number = #{waybillNumber}
+    </select>
+</mapper>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.PutawayDetailsMapper">
+
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="putaway_id" jdbcType="VARCHAR" property="putawayId" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="planned_putaway_number" jdbcType="INTEGER" property="plannedPutawayNumber" />
+        <result column="actual_putaway_number" jdbcType="INTEGER" property="actualPutawayNumber" />
+        <result column="sku_putaway_status" jdbcType="TINYINT" property="skuPutawayStatus" />
+        <result column="recommended_location_code" jdbcType="VARCHAR" property="recommendedLocation" />
+        <result column="actual_location_code" jdbcType="VARCHAR" property="actualLocation" />
+        <result column="creater_id" jdbcType="BIGINT" property="createrId" />
+        <result column="creater_by" jdbcType="VARCHAR" property="createrBy" />
+        <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime" />
+        <result column="creater_time" jdbcType="TIMESTAMP" property="createrTime" />
+        <result column="produce_time" jdbcType="TIMESTAMP" property="produceTime" />
+        <result column="quality_time" jdbcType="INTEGER" property="qualityTime" />
+        <result column="expiration_time" jdbcType="TIMESTAMP" property="expirationTime" />
+    </resultMap>
+
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.brandslink.cloud.inbound.entity.QualityControlList">
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, putaway_id, waybill_number, sku, planned_putaway_number, actual_putaway_number, 
+        sku_putaway_status, recommended_location, actual_location, creater_id, creater_by, creater_time,
+        putaway_time
+    </sql>
+    
+    <update id="updateSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        update t_putaway_details
+        <set>
+            <if test="actualPutawayNumber != null">
+                actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuPutawayStatus != null">
+                sku_putaway_status = #{skuPutawayStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createrId != null">
+                creater_id = #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="createrBy != null">
+                creater_by = #{createrBy,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayTime != null">
+                putaway_time = #{putawayTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <where>
+        	<if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </update>
+    
+    
+    
+    
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_putaway_details
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_putaway_details
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        insert into t_putaway_details (sid, putaway_id, waybill_number, 
+            sku, planned_putaway_number, actual_putaway_number, 
+            sku_putaway_status, recommended_location, 
+            actual_location, creater_id, creater_by, creater_time,
+            putaway_time)
+        values (#{sid,jdbcType=BIGINT}, #{putawayId,jdbcType=VARCHAR}, #{waybillNumber,jdbcType=VARCHAR}, 
+            #{sku,jdbcType=VARCHAR}, #{plannedPutawayNumber,jdbcType=INTEGER}, #{actualPutawayNumber,jdbcType=INTEGER}, 
+            #{skuPutawayStatus,jdbcType=TINYINT}, #{recommendedLocation,jdbcType=VARCHAR}, 
+            #{actualLocation,jdbcType=VARCHAR}, #{createrId,jdbcType=BIGINT}, #{createrBy,jdbcType=VARCHAR},
+            #{createrTime,jdbcType=TIMESTAMP},
+            #{putawayTime,jdbcType=TIMESTAMP})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        insert into t_putaway_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="putawayId != null">
+                putaway_id,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number,
+            </if>
+            <if test="actualPutawayNumber != null">
+                actual_putaway_number,
+            </if>
+            <if test="skuPutawayStatus != null">
+                sku_putaway_status,
+            </if>
+            <if test="recommendedLocation != null">
+                recommended_location,
+            </if>
+            <if test="actualLocation != null">
+                actual_location,
+            </if>
+            <if test="createrId != null">
+                creater_id,
+            </if>
+            <if test="createrBy != null">
+                creater_by,
+            </if>
+            <if test="createrTime != null">
+                creater_time,
+            </if>
+            <if test="putawayTime != null">
+                putaway_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="putawayId != null">
+                #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedPutawayNumber != null">
+                #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="actualPutawayNumber != null">
+                #{actualPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuPutawayStatus != null">
+                #{skuPutawayStatus,jdbcType=TINYINT},
+            </if>
+            <if test="recommendedLocation != null">
+                #{recommendedLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="actualLocation != null">
+                #{actualLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="createrBy != null">
+                #{createrBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createrTime != null">
+                #{createrTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="putawayTime != null">
+                #{putawayTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        update t_putaway_details
+        <set>
+            <if test="putawayId != null">
+                putaway_id = #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="plannedPutawayNumber != null">
+                planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="actualPutawayNumber != null">
+                actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER},
+            </if>
+            <if test="skuPutawayStatus != null">
+                sku_putaway_status = #{skuPutawayStatus,jdbcType=TINYINT},
+            </if>
+            <if test="recommendedLocation != null">
+                recommended_location = #{recommendedLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="actualLocation != null">
+                actual_location = #{actualLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                creater_id = #{createrId,jdbcType=BIGINT},
+            </if>
+            <if test="createrBy != null">
+                creater_by = #{createrBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createrTime != null">
+                creater_time = #{createrTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="putawayTime != null">
+                putaway_time = #{putawayTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails">
+        update t_putaway_details
+        set putaway_id = #{putawayId,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER},
+            actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER},
+            sku_putaway_status = #{skuPutawayStatus,jdbcType=TINYINT},
+            recommended_location = #{recommendedLocation,jdbcType=VARCHAR},
+            actual_location = #{actualLocation,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=BIGINT},
+            creater_by = #{createrBy,jdbcType=VARCHAR},
+            creater_time = #{createrTime,jdbcType=TIMESTAMP}
+            putaway_time = #{putawayTime,jdbcType=TIMESTAMP}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.PutawayDetails" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_putaway_details
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="putawayId != null and putawayId != ''">
+                 and putaway_id = #{putawayId,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="plannedPutawayNumber != null and plannedPutawayNumber != ''">
+                 and planned_putaway_number = #{plannedPutawayNumber,jdbcType=INTEGER}
+            </if>
+            <if test="actualPutawayNumber != null and actualPutawayNumber != ''">
+                 and actual_putaway_number = #{actualPutawayNumber,jdbcType=INTEGER}
+            </if>
+            <if test="skuPutawayStatus != null and skuPutawayStatus != ''">
+                 and sku_putaway_status = #{skuPutawayStatus,jdbcType=TINYINT}
+            </if>
+            <if test="recommendedLocation != null and recommendedLocation != ''">
+                 and recommended_location = #{recommendedLocation,jdbcType=VARCHAR}
+            </if>
+            <if test="actualLocation != null and actualLocation != ''">
+                 and actual_location = #{actualLocation,jdbcType=VARCHAR}
+            </if>
+            <if test="createrId != null and createrId != ''">
+                 and creater_id = #{createrId,jdbcType=BIGINT}
+            </if>
+            <if test="createrBy != null and createrBy != ''">
+                 and creater_by = #{createrBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createrTime != null  and createrTime != ''">
+                creater_time = #{createrTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="putawayTime != null and putawayTime != ''">
+                 and putaway_time = #{putawayTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </select>
+
+    <!--查询上架详情-->
+    <select id="selectByPutawayId" parameterType="java.lang.String" resultMap="BaseResultMap">
+            SELECT a.sid,a.sku, a.planned_putaway_number, a.actual_putaway_number, a.`status`, a.recommended_location_code, a.actual_location_code, a.putaway_time, b.produce_time, b.quality_time, b.expiration_time FROM t_quality_box_putaway a
+            LEFT JOIN receive_good_details b ON a.waybill_number = b.waybill_id AND a.sku = b.sku
+            WHERE a.putaway_id = #{putawayId}
+    </select>
+
+    <!--根据上架单号查询上架详情-->
+    <select id="selectListByPutawayId" parameterType="java.lang.String" resultType="java.lang.Integer">
+            SELECT sku_putaway_status FROM t_putaway_details
+            WHERE putaway_id = #{putawayId}
+    </select>
+
+</mapper>

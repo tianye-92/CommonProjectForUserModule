@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityExceptionControlMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityExceptionControl">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="source_order_number" jdbcType="VARCHAR" property="sourceOrderNumber" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="exception_cause_id" jdbcType="INTEGER" property="exceptionCauseId" />
+        <result column="exception_sku_count" jdbcType="INTEGER" property="exceptionSkuCount" />
+        <result column="exception_reporter_id" jdbcType="BIGINT" property="exceptionReporterId" />
+        <result column="exception_reporter_by" jdbcType="VARCHAR" property="exceptionReporterBy" />
+        <result column="exception_box_number" jdbcType="VARCHAR" property="exceptionBoxNumber" />
+        <result column="exception_reporter_time" jdbcType="TIMESTAMP" property="exceptionReporterTime" />
+    </resultMap>
+
+    <!--异常详情结果集-->
+    <resultMap extends="BaseResultMap" id="QcExceptionMap" type="com.brandslink.cloud.inbound.dto.QcExceptionDetailResDto">
+        <result column="produce_time" jdbcType="TIMESTAMP" property="produceTime" />
+        <result column="quality_time" jdbcType="TIMESTAMP" property="qualityTime" />
+        <result column="expiration_time" jdbcType="TIMESTAMP" property="expirationTime" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, source_order_number, waybill_number, sku, exception_cause, exception_sku_count, 
+        exception_reporter_id, exception_reporter_by, exception_box_number, exception_reporter_time
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_exception_control
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_exception_control
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityExceptionControl">
+        insert into t_quality_exception_control (sid, source_order_number, waybill_number, 
+            sku, exception_cause, exception_sku_count, 
+            exception_reporter_id, exception_reporter_by, 
+            exception_box_number, exception_reporter_time
+            )
+        values (#{sid,jdbcType=BIGINT}, #{sourceOrderNumber,jdbcType=VARCHAR}, #{waybillNumber,jdbcType=VARCHAR}, 
+            #{sku,jdbcType=VARCHAR}, #{exceptionCause,jdbcType=VARCHAR}, #{exceptionSkuCount,jdbcType=INTEGER}, 
+            #{exceptionReporterId,jdbcType=BIGINT}, #{exceptionReporterBy,jdbcType=VARCHAR}, 
+            #{exceptionBoxNumber,jdbcType=VARCHAR}, #{exceptionReporterTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityExceptionControl">
+        insert into t_quality_exception_control
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="sourceOrderNumber != null">
+                source_order_number,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="exceptionCauseId != null">
+                exception_cause_id,
+            </if>
+            <if test="exceptionSkuCount != null">
+                exception_sku_count,
+            </if>
+            <if test="exceptionReporterId != null">
+                exception_reporter_id,
+            </if>
+            <if test="exceptionReporterBy != null">
+                exception_reporter_by,
+            </if>
+            <if test="exceptionBoxNumber != null">
+                exception_box_number,
+            </if>
+            <if test="exceptionReporterTime != null">
+                exception_reporter_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="sourceOrderNumber != null">
+                #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionCauseId != null">
+                #{exceptionCauseId,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionSkuCount != null">
+                #{exceptionSkuCount,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionReporterId != null">
+                #{exceptionReporterId,jdbcType=BIGINT},
+            </if>
+            <if test="exceptionReporterBy != null">
+                #{exceptionReporterBy,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionBoxNumber != null">
+                #{exceptionBoxNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionReporterTime != null">
+                #{exceptionReporterTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityExceptionControl">
+        update t_quality_exception_control
+        <set>
+            <if test="sourceOrderNumber != null">
+                source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionCause != null">
+                exception_cause = #{exceptionCause,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionSkuCount != null">
+                exception_sku_count = #{exceptionSkuCount,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionReporterId != null">
+                exception_reporter_id = #{exceptionReporterId,jdbcType=BIGINT},
+            </if>
+            <if test="exceptionReporterBy != null">
+                exception_reporter_by = #{exceptionReporterBy,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionBoxNumber != null">
+                exception_box_number = #{exceptionBoxNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionReporterTime != null">
+                exception_reporter_time = #{exceptionReporterTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityExceptionControl">
+        update t_quality_exception_control
+        set source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR},
+            waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            exception_cause = #{exceptionCause,jdbcType=VARCHAR},
+            exception_sku_count = #{exceptionSkuCount,jdbcType=INTEGER},
+            exception_reporter_id = #{exceptionReporterId,jdbcType=BIGINT},
+            exception_reporter_by = #{exceptionReporterBy,jdbcType=VARCHAR},
+            exception_box_number = #{exceptionBoxNumber,jdbcType=VARCHAR},
+            exception_reporter_time = #{exceptionReporterTime,jdbcType=TIMESTAMP}
+        where sid = #{sid,jdbcType=BIGINT}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityExceptionControl" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_exception_control
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="sourceOrderNumber != null and sourceOrderNumber != ''">
+                 and source_order_number = #{sourceOrderNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionCause != null and exceptionCause != ''">
+                 and exception_cause = #{exceptionCause,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionSkuCount != null and exceptionSkuCount != ''">
+                 and exception_sku_count = #{exceptionSkuCount,jdbcType=INTEGER}
+            </if>
+            <if test="exceptionReporterId != null and exceptionReporterId != ''">
+                 and exception_reporter_id = #{exceptionReporterId,jdbcType=BIGINT}
+            </if>
+            <if test="exceptionReporterBy != null and exceptionReporterBy != ''">
+                 and exception_reporter_by = #{exceptionReporterBy,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionBoxNumber != null and exceptionBoxNumber != ''">
+                 and exception_box_number = #{exceptionBoxNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionReporterTime != null and exceptionReporterTime != ''">
+                 and exception_reporter_time = #{exceptionReporterTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据来源单号查询异常单详情-->
+    <select id="selectQCExceptionBySourceNumber" parameterType="java.lang.String" resultMap="QcExceptionMap">
+            SELECT a.*, b.produce_time, b.quality_time, b.expiration_time FROM t_quality_exception_control a
+            LEFT JOIN receive_good_details b ON a.waybill_number = b.waybill_id AND a.sku = b.sku
+            WHERE a.source_order_number = #{sourceNumber}
+    </select>
+
+    <!--根据来运单号查询异常单详情-->
+    <select id="selectQCExceptionBywaybillNumber" parameterType="java.lang.String" resultMap="QcExceptionMap">
+            SELECT a.*, b.produce_time, b.quality_time, b.expiration_time FROM t_quality_exception_control a
+            LEFT JOIN receive_good_details b ON a.waybill_number = b.waybill_id AND a.sku = b.sku
+            WHERE a.waybill_number = #{waybillNumber}
+    </select>
+</mapper>

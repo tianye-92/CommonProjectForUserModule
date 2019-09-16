@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.ReceiveSignInMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveSignIn">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="source_id" jdbcType="VARCHAR" property="sourceId" />
+        <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="waybill_type" jdbcType="VARCHAR" property="waybillType" />
+        <result column="waybill_type_name" jdbcType="VARCHAR" property="waybillTypeName" />
+        <result column="weight" jdbcType="DOUBLE" property="weight" />
+        <result column="parcel_quantity" jdbcType="INTEGER" property="parcelQuantity" />
+        <result column="sign_in_creater" jdbcType="VARCHAR" property="signInCreater" />
+        <result column="sign_in_id" jdbcType="INTEGER" property="signInId" />
+        <result column="synergy_name" jdbcType="VARCHAR" property="synergyName" />
+        <result column="synergy_id" jdbcType="INTEGER" property="synergyId" />
+        <result column="receive_good_number" jdbcType="VARCHAR" property="receiveGoodNumber" />
+        <result column="sign_in_time" jdbcType="TIMESTAMP" property="signInTime" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, waybill_id, source_id, source_type, warehouse, waybill_type, waybill_type_name, weight, parcel_quantity, 
+        sign_in_creater, sign_in_id, synergy_name, synergy_id, receive_good_number, sign_in_time
+    </sql>
+    
+    <select id="findAll" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_sign_in
+        <where>
+        	<if test="waybillId != null and waybillId != '' ">
+                and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceId != null and sourceId != '' ">
+                and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceType != null and sourceType != '' ">
+                and source_type = #{sourceType,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouse != null and warehouse != '' ">
+                and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillType != null and waybillType != '' ">
+                and waybill_type = #{waybillType,jdbcType=VARCHAR}
+            </if>
+        	<if test="signInCreater != null and signInCreater != '' ">
+                 and sign_in_creater = #{signInCreater,jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime != null and beginTime != '' ">
+                 and sign_in_time &gt;=#{beginTime}
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                 and sign_in_time &lt;=#{endTime}
+            </if>
+            <!-- <if test="warehouseCodes != null ">
+                and warehouse in
+                <foreach collection="warehouseCodes" index="index" item="warehouseCode" open="(" separator="," close=")">
+                   #{warehouseCode}
+                </foreach>
+            </if> -->
+        </where>
+        order by sign_in_time  desc
+    </select>
+    
+    
+    <!-- 校验运单号是否重复 -->
+    <select id="checkWayBillId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from receive_sign_in where waybill_id = #{waybillId,jdbcType=VARCHAR}
+    </select>
+    
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_sign_in
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from receive_sign_in
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn">
+        insert into receive_sign_in (id, waybill_id, source_id, 
+            source_type, warehouse, waybill_type, waybill_type_name,
+            weight, parcel_quantity, sign_in_creater, 
+            sign_in_id, synergy_name, synergy_id, 
+            receive_good_number, sign_in_time)
+        values (#{id,jdbcType=INTEGER}, #{waybillId,jdbcType=VARCHAR}, #{sourceId,jdbcType=VARCHAR}, 
+            #{sourceType,jdbcType=VARCHAR}, #{warehouse,jdbcType=VARCHAR}, #{waybillType,jdbcType=VARCHAR}, #{waybillTypeName,jdbcType=VARCHAR},
+            #{weight,jdbcType=DOUBLE}, #{parcelQuantity,jdbcType=INTEGER}, #{signInCreater,jdbcType=VARCHAR}, 
+            #{signInId,jdbcType=INTEGER}, #{synergyName,jdbcType=VARCHAR}, #{synergyId,jdbcType=INTEGER}, 
+            #{receiveGoodNumber,jdbcType=VARCHAR}, #{signInTime,jdbcType=TIMESTAMP})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn"
+                               useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into receive_sign_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="sourceId != null">
+                source_id,
+            </if>
+            <if test="sourceType != null">
+                source_type,
+            </if>
+            <if test="warehouse != null">
+                warehouse,
+            </if>
+            <if test="waybillType != null">
+                waybill_type,
+            </if>
+            <if test="waybillTypeName != null">
+                waybill_type_name,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity,
+            </if>
+            <if test="signInCreater != null">
+                sign_in_creater,
+            </if>
+            <if test="signInId != null">
+                sign_in_id,
+            </if>
+            <if test="synergyName != null">
+                synergy_name,
+            </if>
+            <if test="synergyId != null">
+                synergy_id,
+            </if>
+            <if test="receiveGoodNumber != null">
+                receive_good_number,
+            </if>
+            <if test="signInTime != null">
+                sign_in_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null">
+                #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                #{sourceType,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillType != null">
+                #{waybillType,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillTypeName != null">
+                #{waybillTypeName,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="parcelQuantity != null">
+                #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="signInCreater != null">
+                #{signInCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="signInId != null">
+                #{signInId,jdbcType=INTEGER},
+            </if>
+            <if test="synergyName != null">
+                #{synergyName,jdbcType=VARCHAR},
+            </if>
+            <if test="synergyId != null">
+                #{synergyId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveGoodNumber != null">
+                #{receiveGoodNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="signInTime != null">
+                #{signInTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn">
+        update receive_sign_in
+        <set>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null">
+                source_id = #{sourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceType != null">
+                source_type = #{sourceType,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                warehouse = #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillType != null">
+                waybill_type = #{waybillType,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=DOUBLE},
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="signInCreater != null">
+                sign_in_creater = #{signInCreater,jdbcType=VARCHAR},
+            </if>
+            <if test="signInId != null">
+                sign_in_id = #{signInId,jdbcType=INTEGER},
+            </if>
+            <if test="synergyName != null">
+                synergy_name = #{synergyName,jdbcType=VARCHAR},
+            </if>
+            <if test="synergyId != null">
+                synergy_id = #{synergyId,jdbcType=INTEGER},
+            </if>
+            <if test="receiveGoodNumber != null">
+                receive_good_number = #{receiveGoodNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="signInTime != null">
+                sign_in_time = #{signInTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn">
+        update receive_sign_in
+        set waybill_id = #{waybillId,jdbcType=VARCHAR},
+            source_id = #{sourceId,jdbcType=VARCHAR},
+            source_type = #{sourceType,jdbcType=VARCHAR},
+            warehouse = #{warehouse,jdbcType=VARCHAR},
+            waybill_type = #{waybillType,jdbcType=VARCHAR},
+            waybill_type_name = #{waybillTypeName,jdbcType=VARCHAR},
+            weight = #{weight,jdbcType=DOUBLE},
+            parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            sign_in_creater = #{signInCreater,jdbcType=VARCHAR},
+            sign_in_id = #{signInId,jdbcType=INTEGER},
+            synergy_name = #{synergyName,jdbcType=VARCHAR},
+            synergy_id = #{synergyId,jdbcType=INTEGER},
+            receive_good_number = #{receiveGoodNumber,jdbcType=VARCHAR},
+            sign_in_time = #{signInTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.ReceiveSignIn" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_sign_in
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                 and source_id = #{sourceId,jdbcType=VARCHAR}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                 and source_type = #{sourceType,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouse != null and warehouse != ''">
+                 and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillType != null and waybillType != ''">
+                 and waybill_type = #{waybillType,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillTypeName != null and waybillTypeName != ''">
+                 and waybill_type_name = #{waybillTypeName,jdbcType=VARCHAR}
+            </if>
+            <if test="weight != null and weight != ''">
+                 and weight = #{weight,jdbcType=DOUBLE}
+            </if>
+            <if test="parcelQuantity != null and parcelQuantity != ''">
+                 and parcel_quantity = #{parcelQuantity,jdbcType=INTEGER}
+            </if>
+            <if test="signInCreater != null and signInCreater != ''">
+                 and sign_in_creater = #{signInCreater,jdbcType=VARCHAR}
+            </if>
+            <if test="signInId != null and signInId != ''">
+                 and sign_in_id = #{signInId,jdbcType=INTEGER}
+            </if>
+            <if test="synergyName != null and synergyName != ''">
+                 and synergy_name = #{synergyName,jdbcType=VARCHAR}
+            </if>
+            <if test="synergyId != null and synergyId != ''">
+                 and synergy_id = #{synergyId,jdbcType=INTEGER}
+            </if>
+            <if test="receiveGoodNumber != null and receiveGoodNumber != ''">
+                 and receive_good_number = #{receiveGoodNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="signInTime != null and signInTime != ''">
+                 and sign_in_time = #{signInTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </select>
+</mapper>

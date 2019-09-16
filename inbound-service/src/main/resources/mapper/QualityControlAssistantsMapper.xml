@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.QualityControlAssistantsMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.QualityControlAssistants">
+        <id column="sid" jdbcType="BIGINT" property="sid" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="sku_remain_num" jdbcType="INTEGER" property="skuRemainNum"/>
+        <result column="qc_number" jdbcType="INTEGER" property="qcNumber" />
+        <result column="recommended_location_code" jdbcType="VARCHAR" property="recommendedLocationCode"/>
+        <result column="qc_station_id" jdbcType="VARCHAR" property="qcStationId" />
+        <result column="assistants" jdbcType="VARCHAR" property="assistants" />
+        <result column="create_id" jdbcType="BIGINT" property="createId" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="sku_create_time" jdbcType="TIMESTAMP" property="skuCreateTime" />
+        <result column="version" jdbcType="INTEGER" property="version"/>
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sid, waybill_number, sku, sku_remain_num, qc_number, recommended_location_code, qc_station_id, assistants,
+        create_id, create_name, sku_create_time, version
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_control_assistants
+        where sid = #{sid,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_quality_control_assistants
+        where sid = #{sid,jdbcType=BIGINT}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.QualityControlAssistants">
+        insert into t_quality_control_assistants (sid, waybill_number, sku, sku_remain_num,
+            qc_number, recommended_location_code, qc_station_id,
+            assistants, create_id,
+            create_name, sku_create_time, version)
+        values (#{sid,jdbcType=BIGINT}, #{waybillNumber,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR},#{skuRemainNum,jdbcType=INTEGER},
+            #{qcNumber,jdbcType=INTEGER}, #{recommendedLocationCode,jdbcType=VARCHAR}, #{qcStationId,jdbcType=VARCHAR},
+            #{assistants,jdbcType=VARCHAR}, #{createId,jdbcType=BIGINT},
+            #{createName,jdbcType=VARCHAR}, #{skuCreateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlAssistants">
+        insert into t_quality_control_assistants
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="skuRemainNum != null">
+                sku_remain_num,
+            </if>
+            <if test="qcNumber != null">
+                qc_number,
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code,
+            </if>
+            <if test="qcStationId != null">
+                qc_station_id,
+            </if>
+            <if test="assistants != null">
+                assistants,
+            </if>
+            <if test="createId != null">
+                create_id,
+            </if>
+            <if test="createName != null">
+                create_name,
+            </if>
+            <if test="skuCreateTime != null">
+                sku_create_time,
+            </if>
+            <if test="version != null">
+                version
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="skuRemainNum != null">
+                #{skuRemainNum, jdbcType=INTEGER}
+            </if>
+            <if test="qcNumber != null">
+                #{qcNumber,jdbcType=INTEGER},
+            </if>
+            <if test="recommendedLocationCode != null">
+                #{recommendedLocationCode,jdbcType=VARCHAR}
+            </if>
+            <if test="qcStationId != null">
+                #{qcStationId,jdbcType=VARCHAR},
+            </if>
+            <if test="assistants != null">
+                #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="createId != null">
+                #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createName != null">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="skuCreateTime != null">
+                #{skuCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.QualityControlAssistants"
+            useGeneratedKeys="true" keyProperty="sid" keyColumn="sid">
+        update t_quality_control_assistants
+        <set>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="skuRemainNum != null">
+                sku_remain_num = #{skuRemainNum,jdbcType=INTEGER},
+            </if>
+            <if test="qcNumber != null">
+                qc_number = #{qcNumber,jdbcType=INTEGER},
+            </if>
+            <if test="recommendedLocationCode != null">
+                recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="qcStationId != null">
+                qc_station_id = #{qcStationId,jdbcType=VARCHAR},
+            </if>
+            <if test="assistants != null">
+                assistants = #{assistants,jdbcType=VARCHAR},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId,jdbcType=BIGINT},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="skuCreateTime != null">
+                sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER} + 1
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=BIGINT}
+        <if test="version != null">
+            and version = #{version,jdbcType=INTEGER}
+        </if>
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.QualityControlAssistants">
+        update t_quality_control_assistants
+        set waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            sku_remain_num = #{skuRemainNum,jdbcType=INTEGER}
+            qc_number = #{qcNumber,jdbcType=INTEGER},
+            recommended_location_code = #{recommendedLocationCode,jdbcType=VARCHAR},
+            qc_station_id = #{qcStationId,jdbcType=VARCHAR},
+            assistants = #{assistants,jdbcType=VARCHAR},
+            create_id = #{createId,jdbcType=BIGINT},
+            create_name = #{createName,jdbcType=VARCHAR},
+            sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP},
+            version = #{version,jdbcType=INTEGER} + 1
+        where sid = #{sid,jdbcType=BIGINT} AND version = #{version,jdbcType=INTEGER}
+    </update>
+
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.QualityControlAssistants" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_quality_control_assistants
+        <trim prefix="where" prefixOverrides="and">
+            <if test="sid != null and sid != ''">
+                 and sid = #{sid,jdbcType=BIGINT}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="skuRemainNum != null and skuRemainNum != ''">
+                and sku_remain_num = #{skuRemainNum,jdbcType=INTEGER}
+            </if>
+            <if test="qcNumber != null and qcNumber != ''">
+                 and qc_number = #{qcNumber,jdbcType=INTEGER}
+            </if>
+            <if test="recommendedLocationCode != null">
+                 and recommended_location_code = #{recommendedLocationCode, jdbcType=VARCHAR}
+            </if>
+            <if test="qcStationId != null and qcStationId != ''">
+                 and qc_station_id = #{qcStationId,jdbcType=VARCHAR}
+            </if>
+            <if test="assistants != null and assistants != ''">
+                 and assistants = #{assistants,jdbcType=VARCHAR}
+            </if>
+            <if test="createId != null and createId != ''">
+                 and create_id = #{createId,jdbcType=BIGINT}
+            </if>
+            <if test="createName != null and createName != ''">
+                 and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="skuCreateTime != null and skuCreateTime != ''">
+                 and sku_create_time = #{skuCreateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--查询协同人及质检台相关信息-->
+    <select id="selectAssistants" resultMap="BaseResultMap" parameterType="java.lang.String">
+            SELECT * FROM t_quality_control_assistants
+            WHERE waybill_number = #{waybillNumber}
+            AND sku = #{sku} AND recommended_location_code = #{recommendedLocationCode} AND sku_remain_num > 0
+    </select>
+
+</mapper>

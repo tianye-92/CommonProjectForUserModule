@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.PutawayExceptionMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.PutawayException">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="waybill_number" jdbcType="VARCHAR" property="waybillNumber" />
+        <result column="putaway_id" jdbcType="VARCHAR" property="putawayId" />
+        <result column="list_box_id" jdbcType="VARCHAR" property="listBoxId" />
+        <result column="sku" jdbcType="VARCHAR" property="sku" />
+        <result column="exception_cause" jdbcType="VARCHAR" property="exceptionCause" />
+        <result column="amount" jdbcType="INTEGER" property="amount" />
+        <result column="exception_box_id" jdbcType="VARCHAR" property="exceptionBoxId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="creater" jdbcType="VARCHAR" property="creater" />
+        <result column="creater_id" jdbcType="INTEGER" property="createrId" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, waybill_number, putaway_id, list_box_id, sku, exception_cause, amount, exception_box_id, 
+        create_time, creater, creater_id
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from putaway_exception
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from putaway_exception
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.PutawayException">
+        insert into putaway_exception (id, waybill_number, putaway_id, 
+            list_box_id, sku, exception_cause, 
+            amount, exception_box_id, create_time, 
+            creater, creater_id)
+        values (#{id,jdbcType=INTEGER}, #{waybillNumber,jdbcType=VARCHAR}, #{putawayId,jdbcType=VARCHAR}, 
+            #{listBoxId,jdbcType=VARCHAR}, #{sku,jdbcType=VARCHAR}, #{exceptionCause,jdbcType=VARCHAR}, 
+            #{amount,jdbcType=INTEGER}, #{exceptionBoxId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{creater,jdbcType=VARCHAR}, #{createrId,jdbcType=INTEGER})
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayException">
+        insert into putaway_exception
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="waybillNumber != null">
+                waybill_number,
+            </if>
+            <if test="putawayId != null">
+                putaway_id,
+            </if>
+            <if test="listBoxId != null">
+                list_box_id,
+            </if>
+            <if test="sku != null">
+                sku,
+            </if>
+            <if test="exceptionCause != null">
+                exception_cause,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="exceptionBoxId != null">
+                exception_box_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="createrId != null">
+                creater_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="waybillNumber != null">
+                #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayId != null">
+                #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="listBoxId != null">
+                #{listBoxId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionCause != null">
+                #{exceptionCause,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionBoxId != null">
+                #{exceptionBoxId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                #{createrId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.PutawayException">
+        update putaway_exception
+        <set>
+            <if test="waybillNumber != null">
+                waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="putawayId != null">
+                putaway_id = #{putawayId,jdbcType=VARCHAR},
+            </if>
+            <if test="listBoxId != null">
+                list_box_id = #{listBoxId,jdbcType=VARCHAR},
+            </if>
+            <if test="sku != null">
+                sku = #{sku,jdbcType=VARCHAR},
+            </if>
+            <if test="exceptionCause != null">
+                exception_cause = #{exceptionCause,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=INTEGER},
+            </if>
+            <if test="exceptionBoxId != null">
+                exception_box_id = #{exceptionBoxId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="createrId != null">
+                creater_id = #{createrId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.PutawayException">
+        update putaway_exception
+        set waybill_number = #{waybillNumber,jdbcType=VARCHAR},
+            putaway_id = #{putawayId,jdbcType=VARCHAR},
+            list_box_id = #{listBoxId,jdbcType=VARCHAR},
+            sku = #{sku,jdbcType=VARCHAR},
+            exception_cause = #{exceptionCause,jdbcType=VARCHAR},
+            amount = #{amount,jdbcType=INTEGER},
+            exception_box_id = #{exceptionBoxId,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            creater = #{creater,jdbcType=VARCHAR},
+            creater_id = #{createrId,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.PutawayException" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from putaway_exception
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="waybillNumber != null and waybillNumber != ''">
+                 and waybill_number = #{waybillNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="putawayId != null and putawayId != ''">
+                 and putaway_id = #{putawayId,jdbcType=VARCHAR}
+            </if>
+            <if test="listBoxId != null and listBoxId != ''">
+                 and list_box_id = #{listBoxId,jdbcType=VARCHAR}
+            </if>
+            <if test="sku != null and sku != ''">
+                 and sku = #{sku,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionCause != null and exceptionCause != ''">
+                 and exception_cause = #{exceptionCause,jdbcType=VARCHAR}
+            </if>
+            <if test="amount != null and amount != ''">
+                 and amount = #{amount,jdbcType=INTEGER}
+            </if>
+            <if test="exceptionBoxId != null and exceptionBoxId != ''">
+                 and exception_box_id = #{exceptionBoxId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="creater != null and creater != ''">
+                 and creater = #{creater,jdbcType=VARCHAR}
+            </if>
+            <if test="createrId != null and createrId != ''">
+                 and creater_id = #{createrId,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </select>
+
+    <!--根据上架单号查询上架异常明细-->
+    <select id="selectExceptionDetailsByPutawayId" resultMap="BaseResultMap">
+        SELECT a.*, b.produce_time, b.quality_time, b.expiration_time FROM putaway_exception a
+        LEFT JOIN receive_good_details b ON a.waybill_number = b.waybill_id
+        WHERE a.sku = b.sku AND a.putaway_id = #{putawayId}
+    </select>
+
+    <!--根据上架单号查询异常总数-->
+    <select id="selectExcCountByPutawayId" resultType="java.lang.Integer" parameterType="java.lang.String">
+            SELECT IFNULL(sum(amount),0) amount from putaway_exception
+            WHERE putaway_id = #{putawayId}
+    </select>
+
+</mapper>

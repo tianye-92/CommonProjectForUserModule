@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brandslink.cloud.inbound.mapper.ReceiveExceptionHandingMapper">
+    
+    <resultMap id="BaseResultMap" type="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="logistics" jdbcType="VARCHAR" property="logistics" />
+        <result column="waybill_id" jdbcType="VARCHAR" property="waybillId" />
+        <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+        <result column="handler" jdbcType="VARCHAR" property="handler" />
+        <result column="handler_id" jdbcType="INTEGER" property="handlerId" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="parcel_quantity" jdbcType="INTEGER" property="parcelQuantity" />
+        <result column="reserve" jdbcType="VARCHAR" property="reserve" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, logistics, waybill_id, warehouse, handler, handler_id, create_time, parcel_quantity, 
+        reserve
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_exception_handing
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from receive_exception_handing
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    
+    <insert id="insert" parameterType="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding">
+        insert into receive_exception_handing (id, logistics, waybill_id, 
+            warehouse, handler, handler_id, 
+            create_time, parcel_quantity, reserve
+            )
+        values (#{id,jdbcType=INTEGER}, #{logistics,jdbcType=VARCHAR}, #{waybillId,jdbcType=VARCHAR}, 
+            #{warehouse,jdbcType=VARCHAR}, #{handler,jdbcType=VARCHAR}, #{handlerId,jdbcType=INTEGER}, 
+            #{createTime,jdbcType=TIMESTAMP}, #{parcelQuantity,jdbcType=INTEGER}, #{reserve,jdbcType=VARCHAR}
+            )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding">
+        insert into receive_exception_handing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="logistics != null">
+                logistics,
+            </if>
+            <if test="waybillId != null">
+                waybill_id,
+            </if>
+            <if test="warehouse != null">
+                warehouse,
+            </if>
+            <if test="handler != null">
+                handler,
+            </if>
+            <if test="handlerId != null">
+                handler_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity,
+            </if>
+            <if test="reserve != null">
+                reserve,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="logistics != null">
+                #{logistics,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="handler != null">
+                #{handler,jdbcType=VARCHAR},
+            </if>
+            <if test="handlerId != null">
+                #{handlerId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="parcelQuantity != null">
+                #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="reserve != null">
+                #{reserve,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding">
+        update receive_exception_handing
+        <set>
+            <if test="logistics != null">
+                logistics = #{logistics,jdbcType=VARCHAR},
+            </if>
+            <if test="waybillId != null">
+                waybill_id = #{waybillId,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouse != null">
+                warehouse = #{warehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="handler != null">
+                handler = #{handler,jdbcType=VARCHAR},
+            </if>
+            <if test="handlerId != null">
+                handler_id = #{handlerId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="parcelQuantity != null">
+                parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="reserve != null">
+                reserve = #{reserve,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding">
+        update receive_exception_handing
+        set logistics = #{logistics,jdbcType=VARCHAR},
+            waybill_id = #{waybillId,jdbcType=VARCHAR},
+            warehouse = #{warehouse,jdbcType=VARCHAR},
+            handler = #{handler,jdbcType=VARCHAR},
+            handler_id = #{handlerId,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            parcel_quantity = #{parcelQuantity,jdbcType=INTEGER},
+            reserve = #{reserve,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="page" parameterType="com.brandslink.cloud.inbound.entity.ReceiveExceptionHanding" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from receive_exception_handing
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null and id != ''">
+                 and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="logistics != null and logistics != ''">
+                 and logistics = #{logistics,jdbcType=VARCHAR}
+            </if>
+            <if test="waybillId != null and waybillId != ''">
+                 and waybill_id = #{waybillId,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouse != null and warehouse != ''">
+                 and warehouse = #{warehouse,jdbcType=VARCHAR}
+            </if>
+            <if test="handler != null and handler != ''">
+                 and handler = #{handler,jdbcType=VARCHAR}
+            </if>
+            <if test="handlerId != null and handlerId != ''">
+                 and handler_id = #{handlerId,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="parcelQuantity != null and parcelQuantity != ''">
+                 and parcel_quantity = #{parcelQuantity,jdbcType=INTEGER}
+            </if>
+            <if test="reserve != null and reserve != ''">
+                 and reserve = #{reserve,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+</mapper>
