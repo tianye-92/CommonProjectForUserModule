@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.mizhoux.dao.AppFacilitatorInfoEntityMapper">
+  <resultMap id="BaseResultMap" type="me.mizhoux.entity.AppFacilitatorInfoEntity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="app_id" jdbcType="INTEGER" property="appId" />
+    <result column="facilitator_id" jdbcType="INTEGER" property="facilitatorId" />
+    <result column="facilitator_code" jdbcType="VARCHAR" property="facilitatorCode" />
+    <result column="weight" jdbcType="TINYINT" property="weight" />
+    <result column="state" jdbcType="TINYINT" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, app_id, facilitator_id, facilitator_code, weight, state, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_app_facilitator_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_app_facilitator_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="me.mizhoux.entity.AppFacilitatorInfoEntity">
+    insert into t_app_facilitator_info (id, app_id, facilitator_id, 
+      facilitator_code, weight, state, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{appId,jdbcType=INTEGER}, #{facilitatorId,jdbcType=INTEGER}, 
+      #{facilitatorCode,jdbcType=VARCHAR}, #{weight,jdbcType=TINYINT}, #{state,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="me.mizhoux.entity.AppFacilitatorInfoEntity">
+    insert into t_app_facilitator_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="facilitatorId != null">
+        facilitator_id,
+      </if>
+      <if test="facilitatorCode != null">
+        facilitator_code,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="facilitatorId != null">
+        #{facilitatorId,jdbcType=INTEGER},
+      </if>
+      <if test="facilitatorCode != null">
+        #{facilitatorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="me.mizhoux.entity.AppFacilitatorInfoEntity">
+    update t_app_facilitator_info
+    <set>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="facilitatorId != null">
+        facilitator_id = #{facilitatorId,jdbcType=INTEGER},
+      </if>
+      <if test="facilitatorCode != null">
+        facilitator_code = #{facilitatorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="me.mizhoux.entity.AppFacilitatorInfoEntity">
+    update t_app_facilitator_info
+    set app_id = #{appId,jdbcType=INTEGER},
+      facilitator_id = #{facilitatorId,jdbcType=INTEGER},
+      facilitator_code = #{facilitatorCode,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=TINYINT},
+      state = #{state,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
